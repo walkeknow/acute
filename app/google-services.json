@@ -1,0 +1,59 @@
+{
+  "project_info": {
+    "project_number": "686746038556",
+    "firebase_url": "https://acute-85f96.firebaseio.com",
+    "project_id": "acute-85f96",
+    "storage_bucket": "acute-85f96.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:686746038556:android:2c1c7ad26078e291",
+        "android_client_info": {
+          "package_name": "com.kewal.acute"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "686746038556-639b1210l1is8pqg260997kcssjg0f78.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kewal.acute",
+            "certificate_hash": "e0fb21e9cc3ba79939319a3617fa463f83a15cea"
+          }
+        },
+        {
+          "client_id": "686746038556-ms8q0sq75tdheiilof18504toftt7ui1.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "686746038556-ms8q0sq75tdheiilof18504toftt7ui1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBDQrlusysnvtBWThqT8sbnLtsLlwuRPiY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "686746038556-ms8q0sq75tdheiilof18504toftt7ui1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
