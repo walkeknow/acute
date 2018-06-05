@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
                         if (task.getException() instanceof  FirebaseAuthUserCollisionException) {
                             Toast.makeText(MainActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(MainActivity.this, "User Registration Unsuccessful. " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                            Toast.makeText(MainActivity.this, "User Registration Unsuccessful. " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     }
                 }
