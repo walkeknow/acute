@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.facebook.AccessToken;
+import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -14,7 +16,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class LoginMainActivity extends AppCompatActivity {
+public class Dashboard extends AppCompatActivity {
 
     private Button buttonSignOut;
     FirebaseAuth mAuth;
@@ -34,7 +36,13 @@ public class LoginMainActivity extends AppCompatActivity {
         buttonSignOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                signOut();
+                if(isLoggedIn()) {
+                    mAuth.signOut();
+                    LoginManager.getInstance().logOut();
+                    startActivity(new Intent(Dashboard.this, MainActivity.class));
+                } else {
+                    signOut();
+                }
             }
         });
 
@@ -47,23 +55,29 @@ public class LoginMainActivity extends AppCompatActivity {
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        if(mAuth.getCurrentUser() == null) {
-            finish();
-            startActivity(new Intent(LoginMainActivity.this, MainActivity.class));
-        }
-    }
-
     private void signOut() {
         mGoogleSignInClient.signOut()
                 .addOnCompleteListener(this, new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        startActivity(new Intent(LoginMainActivity.this, MainActivity.class));
+                        mAuth.signOut();
+                        startActivity(new Intent(Dashboard.this, MainActivity.class));
                     }
                 });
+    }
+
+    public boolean isLoggedIn() {
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        return accessToken != null;
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        if(mAuth.getCurrentUser() == null) {
+            //finish();
+            startActivity(new Intent(Dashboard.this, MainActivity.class));
+        }
     }
 }

@@ -22,11 +22,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-
-import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP;
 
 public class LoginInActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -106,7 +103,7 @@ public class LoginInActivity extends AppCompatActivity implements View.OnClickLi
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
 
-                            Intent intent = new Intent(LoginInActivity.this, LoginMainActivity.class);
+                            Intent intent = new Intent(LoginInActivity.this, Dashboard.class);
                             startActivity(intent);
 
                         } else {
@@ -147,7 +144,7 @@ public class LoginInActivity extends AppCompatActivity implements View.OnClickLi
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     progressDialog.hide();
                     if (task.isSuccessful()) {
-                        Intent intent = new Intent(LoginInActivity.this, LoginMainActivity.class);
+                        Intent intent = new Intent(LoginInActivity.this, Dashboard.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                         startActivity(intent);
                     } else {
