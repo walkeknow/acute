@@ -76,7 +76,7 @@ public class Dashboard extends AppCompatActivity {
         super.onStart();
 
         if(mAuth.getCurrentUser() == null) {
-            //finish();
+            finish();
             startActivity(new Intent(Dashboard.this, MainActivity.class));
         }
     }

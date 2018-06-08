@@ -1,7 +1,10 @@
 package com.kewal.acute;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -44,12 +47,12 @@ public class MainActivity extends AppCompatActivity {
     FirebaseAuth mAuth;
     private static final String TAG = "MainActivity";
     private CallbackManager mCallbackManager;
+    //private boolean connected;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         mAuth = FirebaseAuth.getInstance();
         progressDialog = new ProgressDialog(this);
         Register = (Button) findViewById(R.id.buttonRegister);
@@ -63,7 +66,11 @@ public class MainActivity extends AppCompatActivity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        registerUsr();
+                        if(!connected()) {
+                            Toast.makeText(MainActivity.this, "No network connection", Toast.LENGTH_SHORT).show();
+                        } else {
+                            registerUsr();
+                        }
                     }
                 }
         );
@@ -90,7 +97,20 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.sign_in_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                signIn();
+                if(!connected()) {
+                    Toast.makeText(MainActivity.this, "No network connection", Toast.LENGTH_SHORT).show();
+                } else {
+                    signIn();
+                }
+            }
+        });
+
+        findViewById(R.id.login_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!connected()) {
+                    Toast.makeText(MainActivity.this, "No network connection", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -120,6 +140,14 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    //Check Network Connection
+    private boolean connected() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
     @Override
     public void onStart() {
         super.onStart();
@@ -127,7 +155,9 @@ public class MainActivity extends AppCompatActivity {
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
         if(currentUser != null) {
-            startActivity(new Intent(MainActivity.this, Dashboard.class));
+            Intent intentn = new Intent(MainActivity.this, Dashboard.class);
+            intentn.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            startActivity(intentn);
         }
     }
 
@@ -164,9 +194,9 @@ public class MainActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            progressDialog.hide();
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
+                            progressDialog.hide();
                             startActivity(new Intent(MainActivity.this, Dashboard.class));
                         } else {
                             // If sign in fails, display a message to the user.
@@ -189,10 +219,9 @@ public class MainActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            progressDialog.hide();
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-
+                            progressDialog.hide();
                             Intent intent = new Intent(MainActivity.this, Dashboard.class);
                             startActivity(intent);
 
@@ -201,8 +230,6 @@ public class MainActivity extends AppCompatActivity {
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
                             Toast.makeText(MainActivity.this, "Authentication Failed", Toast.LENGTH_SHORT );
                         }
-
-                        // ...
                     }
                 });
     }
