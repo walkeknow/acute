@@ -1,5 +1,6 @@
 package com.kewal.acute;
 
+import android.app.ActionBar;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -36,6 +37,8 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
+import java.security.cert.TrustAnchor;
+
 public class MainActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 0;
     GoogleSignInClient mGoogleSignInClient;
@@ -61,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
         Signin = (TextView) findViewById(R.id.textViewOldUsr);
 
         getSupportActionBar().setTitle("Register on Acute");
+
 
         Register.setOnClickListener(
                 new View.OnClickListener() {

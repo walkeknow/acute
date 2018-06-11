@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">Acute</string>
+    <string name="app_info">Info</string>
+    <string name="log_out">Logout</string>
     <string name="facebook_app_id">2076106265945795</string>
     <string name="fb_login_protocol_scheme">fb2076106265945795</string>
 </resources>

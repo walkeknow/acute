@@ -1,9 +1,13 @@
 package com.kewal.acute;
 
+import android.app.ActionBar;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
@@ -25,26 +29,18 @@ public class Dashboard extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login_main);
+        setContentView(R.layout.dashboard);
 
         mAuth = FirebaseAuth.getInstance();
 
-        getSupportActionBar().hide();
+        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
 
-        buttonSignOut = findViewById(R.id.buttonSignOut);
-
-        buttonSignOut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(isLoggedIn()) {
-                    mAuth.signOut();
-                    LoginManager.getInstance().logOut();
-                    startActivity(new Intent(Dashboard.this, MainActivity.class));
-                } else {
-                    signOut();
-                }
-            }
-        });
+        actionBar.setTitle(" Dashboard");
+        actionBar.setLogo(R.drawable.ic_action_name);
+        actionBar.setDisplayUseLogoEnabled(true);
+        actionBar.setDisplayShowHomeEnabled(true);
+        actionBar.setDisplayShowTitleEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(false);
 
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -53,6 +49,28 @@ public class Dashboard extends AppCompatActivity {
                 .build();
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.dashboard_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.logout_ab:
+                if(isLoggedIn()) {
+                    mAuth.signOut();
+                    LoginManager.getInstance().logOut();
+                    startActivity(new Intent(Dashboard.this, MainActivity.class));
+                } else {
+                    signOut();
+                }
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void signOut() {
