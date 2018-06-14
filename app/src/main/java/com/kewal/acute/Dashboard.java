@@ -10,6 +10,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.login.LoginManager;
@@ -20,7 +21,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class Dashboard extends AppCompatActivity {
+public class Dashboard extends AppCompatActivity implements View.OnClickListener {
 
     private Button buttonSignOut;
     FirebaseAuth mAuth;
@@ -35,12 +36,16 @@ public class Dashboard extends AppCompatActivity {
 
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
 
-        actionBar.setTitle(" Dashboard");
-        actionBar.setLogo(R.drawable.ic_action_name);
-        actionBar.setDisplayUseLogoEnabled(true);
-        actionBar.setDisplayShowHomeEnabled(true);
-        actionBar.setDisplayShowTitleEnabled(true);
-        actionBar.setDisplayHomeAsUpEnabled(false);
+        if (actionBar != null) {
+            actionBar.setTitle("   Dashboard");
+            actionBar.setLogo(R.drawable.ic_action_name);
+            actionBar.setDisplayUseLogoEnabled(true);
+            actionBar.setDisplayShowHomeEnabled(true);
+            actionBar.setDisplayShowTitleEnabled(true);
+            actionBar.setDisplayHomeAsUpEnabled(false);
+        }
+
+        findViewById(R.id.add_emp_card).setOnClickListener(this);
 
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -60,9 +65,9 @@ public class Dashboard extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.logout_ab:
-                if(isLoggedIn()) {
+                if (isLoggedIn()) {
                     mAuth.signOut();
                     LoginManager.getInstance().logOut();
                     startActivity(new Intent(Dashboard.this, MainActivity.class));
@@ -93,9 +98,28 @@ public class Dashboard extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        if(mAuth.getCurrentUser() == null) {
+        if (mAuth.getCurrentUser() == null) {
             finish();
             startActivity(new Intent(Dashboard.this, MainActivity.class));
         }
     }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.add_emp_card:
+                Intent intent = new Intent(Dashboard.this, AddEmployeeActivity.class);
+                startActivity(intent);
+                break;
+
+            case R.id.review_card:
+                break;
+        }
+    }
+
+    public void onPause() {
+        super.onPause();
+        overridePendingTransition(0, 0);
+    }
+
 }
