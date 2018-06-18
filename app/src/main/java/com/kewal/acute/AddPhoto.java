@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.DrawFilter;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -22,8 +23,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.Manifest;
 import android.widget.Toast;
+import android.graphics.Matrix;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 
 public class AddPhoto extends AppCompatActivity {
@@ -72,8 +76,8 @@ public class AddPhoto extends AppCompatActivity {
                         ActivityCompat.requestPermissions(AddPhoto.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, GALLERY_PERMISSION_CODE);
                     } else {
                         // Create intent to Open Image applications like Gallery, Google Photos
-                        Intent galleryIntent = new Intent(Intent.ACTION_PICK,
-                                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                        Intent galleryIntent = new Intent(Intent.ACTION_PICK);
+                        galleryIntent.setType("image/*");
                         // Start the Intent
                         startActivityForResult(galleryIntent, GALLERY_PERMISSION_CODE);
                     }
@@ -120,7 +124,7 @@ public class AddPhoto extends AppCompatActivity {
             case GALLERY_PERMISSION_CODE:
                     try {
                         // When an Image is picked
-                        if (requestCode == GALLERY_PERMISSION_CODE && resultCode == RESULT_OK
+                        if (resultCode == RESULT_OK
                                 && null != data) {
                             // Get the Image from data
 
@@ -136,10 +140,39 @@ public class AddPhoto extends AppCompatActivity {
                             int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                             imgDecodableString = cursor.getString(columnIndex);
                             cursor.close();
-                            ImageView imgView = (ImageView) findViewById(R.id.imageView_dp);
+
+
+                            Bitmap loadedBitmap = BitmapFactory.decodeFile(imgDecodableString);
+
+                            ExifInterface exif = null;
+                            try {
+                                File pictureFile = new File(imgDecodableString);
+                                exif = new ExifInterface(pictureFile.getAbsolutePath());
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+                            int orientation = ExifInterface.ORIENTATION_NORMAL;
+
+                            if (exif != null)
+                                orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+
+                            switch (orientation) {
+                                case ExifInterface.ORIENTATION_ROTATE_90:
+                                    loadedBitmap = rotateBitmap(loadedBitmap, 90);
+                                    break;
+                                case ExifInterface.ORIENTATION_ROTATE_180:
+                                    loadedBitmap = rotateBitmap(loadedBitmap, 180);
+                                    break;
+
+                                case ExifInterface.ORIENTATION_ROTATE_270:
+                                    loadedBitmap = rotateBitmap(loadedBitmap, 270);
+                                    break;
+                            }
+
+                            ImageView imgView = findViewById(R.id.imageView_dp);
                             // Set the Image in ImageView after decoding the String
-                            imgView.setImageBitmap(BitmapFactory
-                                    .decodeFile(imgDecodableString));
+                            imgView.setImageBitmap(loadedBitmap);
 
                         } else {
                             Toast.makeText(this, "You haven't picked Image",
@@ -153,5 +186,11 @@ public class AddPhoto extends AppCompatActivity {
             default:
                 break;
         }
+    }
+
+    public static Bitmap rotateBitmap(Bitmap bitmap, int degrees) {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(degrees);
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
 }
