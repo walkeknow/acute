@@ -17,7 +17,7 @@ public class AddEmployeeActivity extends AppCompatActivity implements AdapterVie
     private static String id_type;
     private static long card_no;
     private static String emp_name;
-
+    private static int emp_age;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,14 +74,30 @@ public class AddEmployeeActivity extends AppCompatActivity implements AdapterVie
         if(v.getId() == R.id.button_save) {
             EditText editText_card = findViewById(R.id.editText_card);
             EditText editText_name = findViewById(R.id.editText_name);
+            EditText editTextAge = findViewById(R.id.editTextAge);
 
-            String temp = editText_card.getText().toString();
-            if (!temp.equals("")) {
-                card_no = Long.parseLong(temp);
+            String card = editText_card.getText().toString();
+            String age = editTextAge.getText().toString();
+            String name = editText_name.getText().toString();
+
+            if (card.isEmpty() || age.isEmpty() || name.isEmpty()) {
+                Toast.makeText(AddEmployeeActivity.this, "Fields should not be empty" ,Toast.LENGTH_SHORT).show();
+
+            } else {
+                //TODO: copy below statements in else block
+                card_no = Long.parseLong(card);
+                emp_age = Integer.parseInt(age);
+                emp_name = editText_name.getText().toString();
+
+                if(emp_age < 18) {
+                    Toast.makeText(AddEmployeeActivity.this, "Legal working age in India is above 18 years of age" ,Toast.LENGTH_SHORT).show();
+                } else if (emp_age > 60) {
+                    Toast.makeText(AddEmployeeActivity.this, "Legal working age in India is below 60 years of age" ,Toast.LENGTH_SHORT).show();
+                }
             }
-            emp_name = editText_name.getText().toString();
+
             // Toast.makeText(AddEmployeeActivity.this, String.valueOf(card_no) ,Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(AddEmployeeActivity.this, AddPhoto.class));
+            startActivity(new Intent(AddEmployeeActivity.this, AddDetails.class));
         }
     }
 }

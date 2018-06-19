@@ -6,31 +6,30 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.DrawFilter;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.media.ExifInterface;
+import android.support.media.ExifInterface;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.Manifest;
+import android.widget.RatingBar;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.graphics.Matrix;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 
-public class AddPhoto extends AppCompatActivity {
+public class AddDetails extends AppCompatActivity {
     private static final int CAMERA_REQUEST = 1888;
     private ImageView imageView;
     private static final int CAMERA_PERMISSION_CODE = 100;
@@ -46,44 +45,68 @@ public class AddPhoto extends AppCompatActivity {
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
 
         if (actionBar != null) {
-            actionBar.setTitle("Add Photo");
+            actionBar.setTitle("Rate Employee");
         }
 
-        Button button_photo = findViewById(R.id.button_camera);
-        Button button_gallery = findViewById(R.id.button_gallery);
         Button button_submit = findViewById(R.id.button_submit);
+        final EditText editText_comments = findViewById(R.id.editText_comments);
 
-        imageView = findViewById(R.id.imageView_dp);
+        ImageView imageView = findViewById(R.id.imageView_dp);
 
-        button_photo.setOnClickListener(new View.OnClickListener() {
+        imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (ActivityCompat.checkSelfPermission(AddPhoto.this,Manifest.permission.CAMERA)
-                        != PackageManager.PERMISSION_GRANTED) {
-                   ActivityCompat.requestPermissions(AddPhoto.this, new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_CODE);
-                } else {
-                    Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    startActivityForResult(cameraIntent, CAMERA_REQUEST);
-                }
-            }
-        });
+                AlertDialog.Builder mBuilder = new AlertDialog.Builder(AddDetails.this);
+                View mView = getLayoutInflater().inflate(R.layout.dialog_image, null);
+                ImageButton imageButtonCamera = mView.findViewById(R.id.imageButtonCamera);
+                ImageButton imageButtonGallery = mView.findViewById(R.id.imageButtonGallery);
+                final TextView textViewCancel = mView.findViewById(R.id.textViewCancel);
 
-        button_gallery.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    if (ActivityCompat.checkSelfPermission(AddPhoto.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                        ActivityCompat.requestPermissions(AddPhoto.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, GALLERY_PERMISSION_CODE);
-                    } else {
-                        // Create intent to Open Image applications like Gallery, Google Photos
-                        Intent galleryIntent = new Intent(Intent.ACTION_PICK);
-                        galleryIntent.setType("image/*");
-                        // Start the Intent
-                        startActivityForResult(galleryIntent, GALLERY_PERMISSION_CODE);
+                mBuilder.setView(mView);
+                final AlertDialog dialog = mBuilder.create();
+                dialog.show();
+
+                imageButtonCamera.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // Toast.makeText(ProfileActivity.this, "Camera", Toast.LENGTH_SHORT).show();
+                        if (ActivityCompat.checkSelfPermission(AddDetails.this, android.Manifest.permission.CAMERA)
+                                != PackageManager.PERMISSION_GRANTED) {
+                            ActivityCompat.requestPermissions(AddDetails.this, new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_CODE);
+                        } else {
+                            Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                            dialog.dismiss();
+                            startActivityForResult(cameraIntent, CAMERA_REQUEST);
+                        }
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                });
+                imageButtonGallery.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // Toast.makeText(ProfileActivity.this, "Gallery", Toast.LENGTH_SHORT).show();
+                        try {
+                            if (ActivityCompat.checkSelfPermission(AddDetails.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                                ActivityCompat.requestPermissions(AddDetails.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, GALLERY_PERMISSION_CODE);
+                            } else {
+                                // Create intent to Open Image applications like Gallery, Google Photos
+                                Intent galleryIntent = new Intent(Intent.ACTION_PICK);
+                                galleryIntent.setType("image/*");
+                                // Start the Intent
+                                dialog.dismiss();
+                                startActivityForResult(galleryIntent, GALLERY_PERMISSION_CODE);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
+                textViewCancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
             }
         });
 
@@ -92,6 +115,7 @@ public class AddPhoto extends AppCompatActivity {
             public void onClick(View v) {
                 EditText editText_comments = findViewById(R.id.editText_comments);
                 emp_comments = editText_comments.getText().toString();
+                Toast.makeText(AddDetails.this, "Employee details submitted!", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -118,7 +142,9 @@ public class AddPhoto extends AppCompatActivity {
             case CAMERA_REQUEST:
                 if(resultCode == Activity.RESULT_OK) {
                     Bitmap dp = (Bitmap) data.getExtras().get("data");
-                    imageView.setImageBitmap(dp);
+                    ImageView imgView = findViewById(R.id.imageView_dp);
+                    // Set the Image in ImageView after decoding the String
+                    imgView.setImageBitmap(dp);
                 }
                 break;
             case GALLERY_PERMISSION_CODE:

@@ -101,7 +101,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:text="Reviews"
+                    android:text="@string/search_reviews"
                     android:textStyle="bold" />
 
                 <View
@@ -122,29 +122,4 @@
         </android.support.v7.widget.CardView>
 
     </LinearLayout>
-
-    <android.support.constraint.ConstraintLayout
-        android:visibility="gone"
-        android:id="@+id/constraintLayout3"
-        android:layout_width="647dp"
-        android:layout_height="0dp"
-        android:background="@android:color/holo_blue_light"
-        android:paddingBottom="10dp"
-        android:paddingTop="10dp"
-        tools:layout_editor_absoluteX="18dp"
-        tools:layout_editor_absoluteY="360dp">
-
-        <ImageView
-            android:id="@+id/imageView2"
-            android:layout_width="0dp"
-            android:layout_height="135dp"
-            android:layout_marginBottom="9dp"
-            android:layout_marginTop="9dp"
-            android:adjustViewBounds="true"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/logo" />
-    </android.support.constraint.ConstraintLayout>
 </android.support.constraint.ConstraintLayout>

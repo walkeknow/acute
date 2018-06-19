@@ -15,140 +15,153 @@ android:id="@+id/ll">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:id="@+id/linearLayout2"
-        android:layout_height="264dp"
+        android:layout_height="match_parent"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="88dp"
-        android:clipToPadding="false"
-        android:gravity="center"
-        android:orientation="horizontal"
+        android:layout_marginTop="8dp"
+        android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <android.support.v7.widget.CardView
-            android:layout_width="160dp"
-            android:layout_height="250dp"
-            android:layout_margin="10dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:foreground="?android:attr/selectableItemBackground">
+        <LinearLayout
+            android:id="@+id/linearLayout2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:clipToPadding="false"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <LinearLayout
-                android:id="@+id/add_emp_card"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:orientation="vertical">
+            <android.support.v7.widget.CardView
+                android:layout_width="160dp"
+                android:layout_height="250dp"
+                android:layout_margin="10dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground">
 
-                <ImageView
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
-                    android:background="@drawable/circle_add_employee"
-                    android:padding="10dp"
-                    android:src="@drawable/round_person_add_white_48dp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:text="Add Employee"
-                    android:textStyle="bold" />
-
-                <View
+                <LinearLayout
+                    android:id="@+id/add_emp_card"
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_margin="10dp"
-                    android:background="@color/light_gray" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:gravity="center"
-                    android:padding="5dp"
-                    android:text="Add a new employee you know of"
-                    android:textColor="@android:color/darker_gray" />
+                    android:orientation="vertical">
 
-            </LinearLayout>
-        </android.support.v7.widget.CardView>
+                    <ImageView
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:background="@drawable/circle_add_employee"
+                        android:padding="10dp"
+                        android:src="@drawable/round_person_add_white_48dp" />
 
-        <android.support.v7.widget.CardView
-            android:layout_width="160dp"
-            android:layout_height="250dp"
-            android:layout_margin="10dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:foreground="?android:attr/selectableItemBackground">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="Add Employee"
+                        android:textStyle="bold" />
 
-            <LinearLayout
-                android:id="@+id/review_card"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:orientation="vertical">
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_margin="10dp"
+                        android:background="@color/light_gray" />
 
-                <ImageView
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
-                    android:background="@drawable/circle_review"
-                    android:padding="10dp"
-                    android:src="@drawable/round_star_rate_white_48dp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:text="Add a new employee you know of"
+                        android:textColor="@android:color/darker_gray" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:text="Reviews"
-                    android:textStyle="bold" />
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
 
-                <View
+            <android.support.v7.widget.CardView
+                android:layout_width="160dp"
+                android:layout_height="250dp"
+                android:layout_margin="10dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground">
+
+                <LinearLayout
+                    android:id="@+id/review_card"
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_margin="10dp"
-                    android:background="@color/light_gray" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:gravity="center"
-                    android:padding="5dp"
-                    android:text="Search reviews of existing employees"
-                    android:textColor="@android:color/darker_gray" />
+                    android:orientation="vertical">
 
-            </LinearLayout>
-        </android.support.v7.widget.CardView>
+                    <ImageView
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:background="@drawable/circle_review"
+                        android:padding="10dp"
+                        android:src="@drawable/round_star_rate_white_48dp" />
 
-    </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="@string/search_reviews"
+                        android:textStyle="bold" />
 
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/constraintLayout3"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="50dp"
-        android:background="@android:color/holo_blue_light"
-        android:paddingBottom="10dp"
-        android:paddingTop="10dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
-        app:layout_constraintVertical_bias="0.923">
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_margin="10dp"
+                        android:background="@color/light_gray" />
 
-        <ImageView
-            android:id="@+id/imageView2"
-            android:layout_width="0dp"
-            android:layout_height="135dp"
-            android:layout_marginBottom="9dp"
-            android:layout_marginTop="9dp"
-            android:adjustViewBounds="true"
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:text="Search reviews of existing employees"
+                        android:textColor="@android:color/darker_gray" />
+
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+        </LinearLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/constraintLayout3"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="50dp"
+            android:background="@color/colorPrimary"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/logo" />
-    </android.support.constraint.ConstraintLayout>
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
+            app:layout_constraintVertical_bias="0.923">
+
+            <com.mikhaellopez.circularimageview.CircularImageView
+                android:id="@+id/imageView_dp"
+                android:layout_width="165dp"
+                android:layout_height="165dp"
+                android:cropToPadding="false"
+                android:foregroundGravity="center"
+                android:src="@drawable/logo"
+                app:civ_border_color="@color/colorPrimaryDark"
+                app:civ_border_width="15dp"
+                app:civ_shadow="false"
+                app:civ_shadow_color="@android:color/black"
+                app:civ_shadow_radius="15"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </android.support.constraint.ConstraintLayout>
+    </LinearLayout>
+
 </android.support.constraint.ConstraintLayout>

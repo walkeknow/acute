@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.kewal.acute">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <uses-feature
-        android:name="android.hardware.camera" android:required="false">
+        android:name="android.hardware.camera"
+        android:required="false">
     </uses-feature>
 
     <application
@@ -19,6 +21,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity
             android:name=".MainActivity"
             android:theme="@style/AppTheme">
@@ -56,6 +59,7 @@
         <activity
             android:name=".AddEmployeeActivity"
             android:parentActivityName=".Dashboard">
+
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity">
@@ -70,13 +74,22 @@
             </meta-data>
         </activity>
         <activity
-            android:name=".AddPhoto"
+            android:name=".AddDetails"
             android:parentActivityName=".Dashboard">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity">
             </meta-data>
         </activity>
+        <activity
+            android:name=".ProfileActivity"
+            android:parentActivityName=".Dashboard">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity">
+            </meta-data>
+        </activity>
+
     </application>
 
 </manifest>

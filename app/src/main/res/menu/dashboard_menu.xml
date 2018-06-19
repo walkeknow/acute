@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/info_ab"
-        android:title="@string/app_info">
+        android:id="@+id/profile_ab"
+        android:title="@string/profile">
     </item>
 
     <item

@@ -74,6 +74,9 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                 } else {
                     signOut();
                 }
+
+            case  R.id.profile_ab:
+                startActivity(new Intent(Dashboard.this, ProfileActivity.class));
         }
         return super.onOptionsItemSelected(item);
     }
@@ -121,5 +124,4 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
         super.onPause();
         overridePendingTransition(0, 0);
     }
-
 }
