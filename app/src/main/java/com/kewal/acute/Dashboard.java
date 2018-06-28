@@ -46,6 +46,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
         }
 
         findViewById(R.id.add_emp_card).setOnClickListener(this);
+        findViewById(R.id.review_card).setOnClickListener(this);
 
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -70,7 +71,9 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                 if (isLoggedIn()) {
                     mAuth.signOut();
                     LoginManager.getInstance().logOut();
-                    startActivity(new Intent(Dashboard.this, MainActivity.class));
+                    Intent intent = new Intent(Dashboard.this, MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
                 } else {
                     signOut();
                 }
@@ -87,7 +90,9 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         mAuth.signOut();
-                        startActivity(new Intent(Dashboard.this, MainActivity.class));
+                        Intent intent = new Intent(Dashboard.this, MainActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
                     }
                 });
     }
@@ -111,11 +116,11 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.add_emp_card:
-                Intent intent = new Intent(Dashboard.this, AddEmployeeActivity.class);
-                startActivity(intent);
+                startActivity(new Intent(Dashboard.this, AddEmployeeActivity.class));
                 break;
 
             case R.id.review_card:
+                startActivity(new Intent(Dashboard.this, SearchReviewActivity.class));
                 break;
         }
     }

@@ -84,21 +84,12 @@
                         android:hint="Username"
                         android:inputType="textPersonName" />
 
-                    <EditText
-                        android:id="@+id/editText6"
+                    <AutoCompleteTextView
+                        android:id="@+id/autoCompleteTextView_city"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_weight="1"
-                        android:ems="10"
-                        android:hint="Date of Birth"
-                        android:inputType="date" />
-
-                    <MultiAutoCompleteTextView
-                        android:id="@+id/multiAutoCompleteTextView_city"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:hint="City" />
+                        android:hint="@string/city" />
 
                     <EditText
                         android:id="@+id/editText3"
@@ -117,6 +108,18 @@
                         android:ems="10"
                         android:hint="Mobile Number"
                         android:inputType="phone" />
+
+                    <TextView
+                        android:id="@+id/editDate"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:ems="10"
+                        android:hint="@string/age"
+                        android:textSize="18sp"
+                        android:layout_marginStart="4dp"
+                        android:gravity="center_vertical"
+                        />
 
                     <Button
                         android:id="@+id/button_save"

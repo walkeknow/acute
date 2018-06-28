@@ -116,6 +116,9 @@ public class AddDetails extends AppCompatActivity {
                 EditText editText_comments = findViewById(R.id.editText_comments);
                 emp_comments = editText_comments.getText().toString();
                 Toast.makeText(AddDetails.this, "Employee details submitted!", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(AddDetails.this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
             }
         });
     }

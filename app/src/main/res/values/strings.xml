@@ -9,12 +9,25 @@
     <string name="gallery">Gallery</string>
     <string name="camera">Camera</string>
     <string name="cancel">Cancel</string>
-    <string name="emp_age">Age</string>
     <string name="emp_name_as_on_card">Name (As on Card)</string>
     <string name="save">Save</string>
     <string name="search_reviews">Search Reviews</string>
     <string name="add_comment">Fill in work history or any additional comments about the employee here</string>
     <string name="submit">Submit</string>
+    <string name="name">Name</string>
+    <string name="view_results">View Results</string>
+    <string name="location">location</string>
+    <string name="id_card_type">ID Card Type</string>
+    <string name="city">City</string>
+    <string name="age">Date of birth</string>
+    <string name="search">Search</string>
+    <string name="results">Results</string>
+    <string name="age_hint">20</string>
+    <string name="name_hint">Rahul Kumar</string>
+    <string name="select_employer">Select Employer</string>
+    <string name="reviews">Reviews</string>
+    <string name="ratings">Ratings</string>
+    <string name="set">Set</string>
     <string-array name="job_array">
         <item>Full Time Servant</item>
         <item>Part Time Servant</item>
@@ -30,6 +43,7 @@
         <item>Passport</item>
         <item>Others</item>
     </string-array>
+
     <string-array name="city_array">
         <item> Agra </item>
         <item> Ahmedabad </item>

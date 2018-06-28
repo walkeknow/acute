@@ -160,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
 
         if(currentUser != null) {
             Intent intentn = new Intent(MainActivity.this, Dashboard.class);
-            intentn.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            intentn.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intentn);
         }
     }
@@ -280,6 +280,11 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    public void onPause() {
+        super.onPause();
+        overridePendingTransition(0, 0);
     }
 
 }

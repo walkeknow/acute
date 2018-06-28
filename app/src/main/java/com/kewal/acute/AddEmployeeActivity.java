@@ -1,23 +1,35 @@
 package com.kewal.acute;
 
+import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import java.text.SimpleDateFormat;
+import java.time.Year;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 public class AddEmployeeActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnClickListener{
 
     private static String emp_type;
     private static String id_type;
-    private static long card_no;
+    private static String card_no;
     private static String emp_name;
-    private static int emp_age;
+    private static String emp_age;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,10 +46,49 @@ public class AddEmployeeActivity extends AppCompatActivity implements AdapterVie
         Spinner job_spinner = (Spinner) findViewById(R.id.spinner);
         Spinner card_spinner = (Spinner) findViewById(R.id.spinner2);
         Button save_button = (Button) findViewById(R.id.button_save);
+        final TextView birthDate = findViewById(R.id.editDate);
+        final Calendar myCalendar = Calendar.getInstance();
+        final Calendar currentCalendar = Calendar.getInstance();
+
+
 
         save_button.setOnClickListener(this);
         job_spinner.setOnItemSelectedListener(this);
         card_spinner.setOnItemSelectedListener(this);
+
+        final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
+
+            @Override
+            public void onDateSet(DatePicker view, int year, int month,
+                                  int day) {
+                final Date date = new GregorianCalendar(year,month,day).getTime();
+
+                int current_year = currentCalendar.get(Calendar.YEAR);
+
+                int differenceYears = current_year - year;
+
+
+                if (differenceYears < 18) {
+                    Toast.makeText(AddEmployeeActivity.this,"Age cannot be less than 18", Toast.LENGTH_SHORT).show();
+                } else if (differenceYears > 60) {
+                    Toast.makeText(AddEmployeeActivity.this,"Age cannot be more than 60", Toast.LENGTH_SHORT).show();
+                } else {
+                    birthDate.setText(formatDate(date));
+                }
+            }
+
+        };
+
+        birthDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                new DatePickerDialog(AddEmployeeActivity.this, date, myCalendar
+                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                        myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+
+            }
+        });
 
         ArrayAdapter<CharSequence> job_adapter = ArrayAdapter.createFromResource(this,
                 R.array.job_array, android.R.layout.simple_spinner_item);
@@ -50,6 +101,12 @@ public class AddEmployeeActivity extends AppCompatActivity implements AdapterVie
         card_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         card_spinner.setAdapter(card_adapter);
 
+    }
+
+    public String formatDate(Date date) {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        String birthDate = sdf.format(date);
+        return birthDate;
     }
 
     public void onItemSelected(AdapterView<?> parent, View view,
@@ -74,30 +131,29 @@ public class AddEmployeeActivity extends AppCompatActivity implements AdapterVie
         if(v.getId() == R.id.button_save) {
             EditText editText_card = findViewById(R.id.editText_card);
             EditText editText_name = findViewById(R.id.editText_name);
-            EditText editTextAge = findViewById(R.id.editTextAge);
+            TextView textView_birth_date = findViewById(R.id.editDate);
+
+            String birth_date = null;
+
+            if (textView_birth_date.getText() != null ) {
+                birth_date = textView_birth_date.getText().toString();
+            }
 
             String card = editText_card.getText().toString();
-            String age = editTextAge.getText().toString();
             String name = editText_name.getText().toString();
 
-            if (card.isEmpty() || age.isEmpty() || name.isEmpty()) {
+            if (card.isEmpty() || name.isEmpty() || birth_date.isEmpty()) {
                 Toast.makeText(AddEmployeeActivity.this, "Fields should not be empty" ,Toast.LENGTH_SHORT).show();
 
             } else {
                 //TODO: copy below statements in else block
-                card_no = Long.parseLong(card);
-                emp_age = Integer.parseInt(age);
+                card_no = editText_card.getText().toString();
                 emp_name = editText_name.getText().toString();
-
-                if(emp_age < 18) {
-                    Toast.makeText(AddEmployeeActivity.this, "Legal working age in India is above 18 years of age" ,Toast.LENGTH_SHORT).show();
-                } else if (emp_age > 60) {
-                    Toast.makeText(AddEmployeeActivity.this, "Legal working age in India is below 60 years of age" ,Toast.LENGTH_SHORT).show();
-                }
+                startActivity(new Intent(AddEmployeeActivity.this, AddDetails.class));
             }
 
             // Toast.makeText(AddEmployeeActivity.this, String.valueOf(card_no) ,Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(AddEmployeeActivity.this, AddDetails.class));
+            //(new Intent(AddEmployeeActivity.this, AddDetails.class));
         }
     }
 }

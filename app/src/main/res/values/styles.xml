@@ -14,4 +14,9 @@
         <item name="android:src">@drawable/ic_action_menu</item>
     </style>
 
+    <style name="MySplashScreen" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:colorPrimaryDark">@color/colorPrimary</item>
+    </style>
+
+
 </resources>

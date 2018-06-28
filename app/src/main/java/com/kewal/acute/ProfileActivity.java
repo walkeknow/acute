@@ -2,6 +2,7 @@ package com.kewal.acute;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -18,16 +19,24 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
+import android.widget.AutoCompleteTextView;
+import android.widget.DatePicker;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Locale;
 
 
 public class ProfileActivity extends AppCompatActivity {
@@ -37,11 +46,14 @@ public class ProfileActivity extends AppCompatActivity {
     private static final int CAMERA_PERMISSION_CODE = 101;
     private static final int GALLERY_PERMISSION_CODE = 1;
     String imgDecodableString;
+    FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+
+        mAuth = FirebaseAuth.getInstance();
 
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
 
@@ -49,10 +61,49 @@ public class ProfileActivity extends AppCompatActivity {
             actionBar.setTitle("Profile");
         }
 
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+        final TextView birthDate = findViewById(R.id.editDate);
+        final Calendar myCalendar = Calendar.getInstance();
+        final Calendar currentCalendar = Calendar.getInstance();
+
+        final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
+
+            @Override
+            public void onDateSet(DatePicker view, int year, int month,
+                                  int day) {
+                final Date date = new GregorianCalendar(year,month,day).getTime();
+
+                int current_year = currentCalendar.get(Calendar.YEAR);
+
+                int differenceYears = current_year - year;
+
+
+                if (differenceYears < 18) {
+                    Toast.makeText(ProfileActivity.this,"Age cannot be less than 18", Toast.LENGTH_SHORT).show();
+                } else if (differenceYears > 60) {
+                    Toast.makeText(ProfileActivity.this,"Age cannot be more than 60", Toast.LENGTH_SHORT).show();
+                } else {
+                    birthDate.setText(formatDate(date));
+                }
+            }
+
+        };
+
+        birthDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                new DatePickerDialog(ProfileActivity.this, date, myCalendar
+                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                        myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+
+            }
+        });
+
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(ProfileActivity.this,
                 R.array.city_array, android.R.layout.simple_dropdown_item_1line);
 
-        MultiAutoCompleteTextView textView = findViewById(R.id.multiAutoCompleteTextView_city);
+        AutoCompleteTextView textView = findViewById(R.id.autoCompleteTextView_city);
         textView.setAdapter(adapter);
 
         ImageView imageView = findViewById(R.id.imageView_dp);
@@ -87,7 +138,6 @@ public class ProfileActivity extends AppCompatActivity {
                 imageButtonGallery.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        // Toast.makeText(ProfileActivity.this, "Gallery", Toast.LENGTH_SHORT).show();
                         try {
                             if (ActivityCompat.checkSelfPermission(ProfileActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                                 ActivityCompat.requestPermissions(ProfileActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, GALLERY_PERMISSION_CODE);
@@ -121,6 +171,22 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    public String formatDate(Date date) {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        return sdf.format(date);
+    }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if(mAuth.getCurrentUser() == null) {
+            Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+        }
     }
 
     @Override
@@ -220,5 +286,10 @@ public class ProfileActivity extends AppCompatActivity {
         Matrix matrix = new Matrix();
         matrix.postRotate(degrees);
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+    }
+
+    public boolean isLoggedIn() {
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        return accessToken != null;
     }
 }
