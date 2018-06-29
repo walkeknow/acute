@@ -82,7 +82,7 @@
                         android:layout_weight="1"
                         android:ems="10"
                         android:hint="Username"
-                        android:inputType="textPersonName" />
+                        android:inputType="textCapWords" />
 
                     <AutoCompleteTextView
                         android:id="@+id/autoCompleteTextView_city"
@@ -92,21 +92,21 @@
                         android:hint="@string/city" />
 
                     <EditText
-                        android:id="@+id/editText3"
+                        android:id="@+id/editText3_Complete_Address"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_weight="1"
                         android:ems="10"
-                        android:hint="Complete Address"
-                        android:inputType="textMultiLine" />
+                        android:hint="@string/complete_address"
+                        android:inputType="textCapSentences" />
 
                     <EditText
-                        android:id="@+id/editText5"
+                        android:id="@+id/editText5_mobile_number"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_weight="1"
                         android:ems="10"
-                        android:hint="Mobile Number"
+                        android:hint="@string/mobile_number"
                         android:inputType="phone" />
 
                     <TextView
@@ -129,7 +129,7 @@
                         android:layout_height="0dp"
                         android:layout_weight="1"
                         android:background="@color/colorPrimary"
-                        android:text="Save"
+                        android:text="@string/save"
                         android:textColor="@android:color/background_light" />
 
                 </LinearLayout>

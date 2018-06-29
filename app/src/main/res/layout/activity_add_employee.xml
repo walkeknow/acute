@@ -94,8 +94,10 @@
                 android:layout_marginEnd="16dp"
                 android:layout_marginStart="16dp"
                 android:ems="10"
-                android:hint="Card Number"
-                android:textSize="18sp" />
+                android:hint="@string/card_number"
+                android:inputType="textCapCharacters"
+                android:textSize="18sp"
+                android:digits="@string/valid_digits"/>
 
             <EditText
                 android:id="@+id/editText_name"
@@ -104,7 +106,8 @@
                 android:layout_margin="16dp"
                 android:hint="@string/emp_name_as_on_card"
                 android:textAlignment="viewStart"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:inputType="textCapWords" />
 
             <TextView
                 android:id="@+id/editDate"

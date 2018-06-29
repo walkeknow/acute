@@ -9,7 +9,7 @@
     <string name="gallery">Gallery</string>
     <string name="camera">Camera</string>
     <string name="cancel">Cancel</string>
-    <string name="emp_name_as_on_card">Name (As on Card)</string>
+    <string name="emp_name_as_on_card">Name</string>
     <string name="save">Save</string>
     <string name="search_reviews">Search Reviews</string>
     <string name="add_comment">Fill in work history or any additional comments about the employee here</string>
@@ -28,6 +28,10 @@
     <string name="reviews">Reviews</string>
     <string name="ratings">Ratings</string>
     <string name="set">Set</string>
+    <string name="valid_digits">ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890 \</string>
+    <string name="card_number">Card Number</string>
+    <string name="complete_address">Complete Address</string>
+    <string name="mobile_number">Mobile Number</string>
     <string-array name="job_array">
         <item>Full Time Servant</item>
         <item>Part Time Servant</item>
@@ -41,12 +45,12 @@
         <item>Voter ID Card</item>
         <item>Driving License</item>
         <item>Passport</item>
-        <item>Others</item>
     </string-array>
 
     <string-array name="city_array">
         <item> Agra </item>
         <item> Ahmedabad </item>
+        <item> Amritsar </item>
         <item> Banglore (Bengaluru) </item>
         <item> Bhopal </item>
         <item> Chennai </item>
@@ -61,6 +65,7 @@
         <item> Kolkata </item>
         <item> Lucknow </item>
         <item> Mumbai </item>
+        <item> New Delhi </item>
         <item> Nagpur </item>
         <item> Patna </item>
         <item> Pune </item>
