@@ -42,6 +42,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.EnumMap;
 
 public class AddDetails extends AppCompatActivity {
     //private static final int CAMERA_REQUEST = 1888;
@@ -56,6 +57,7 @@ public class AddDetails extends AppCompatActivity {
     String id;
     String mCurrentPhotoPath;
     private final int CAMERA_REQUEST = 1888;
+    ImageView imageView;
 
 
     @Override
@@ -72,9 +74,7 @@ public class AddDetails extends AppCompatActivity {
         Button button_submit = findViewById(R.id.button_submit);
         final EditText editText_comments = findViewById(R.id.editText_comments);
 
-        ImageView imageView = findViewById(R.id.imageView_dp);
-
-        mStorageRef = FirebaseStorage.getInstance().getReference();
+        imageView = findViewById(R.id.imageView_dp);
 
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -141,11 +141,10 @@ public class AddDetails extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+                mStorageRef = FirebaseStorage.getInstance().getReference();
                 databaseReferenceEmployees = FirebaseDatabase.getInstance().getReference();
 
                 id = databaseReferenceEmployees.push().getKey();
-
-                uploadFile();
 
                 Intent intentEmp = getIntent();
 
@@ -156,54 +155,71 @@ public class AddDetails extends AppCompatActivity {
 
                 RatingBar ratingBar = findViewById(R.id.ratingBar);
                 String stars = String.valueOf(ratingBar.getRating());
+                employee.setEmpId(id);
+                employee.setRating(stars);
+                employee.setComment(emp_comments);
 
-                if(id != null) {
-                    employee.setEmpId(id);
-                    employee.setRating(stars);
-                    employee.setComment(emp_comments);
-                    databaseReferenceEmployees.child("Employees").child(employee.getEmpName()).setValue(employee);
-                    //selectedImage = null;
+                if(selectedImage != null) {
+                    uploadFile(employee);
+                } else {
                     Toast.makeText(AddDetails.this, "Employee details submitted!", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(AddDetails.this, MainActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
-                } else {
-                    Toast.makeText(AddDetails.this, "There was some problem with submitting the details, please try again later", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AddDetails.this, "successful " + id, Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
 
-    private void uploadFile() {
+    private void uploadDetails(Employee employee) {
+
+        if(id != null) {
+            databaseReferenceEmployees.child("Employees").child(employee.getEmpName()).setValue(employee);
+
+            Toast.makeText(AddDetails.this, "Employee details submitted!", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(AddDetails.this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+
+        } else {
+            Toast.makeText(AddDetails.this, "There was some problem with submitting the details, please try again later", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    private void uploadFile(final Employee employee) {
+
         StorageReference empRef = mStorageRef.child("employees").child("employee" + id +".jpg");
 
-        //final ProgressDialog progressDialog = new ProgressDialog(this);
-        //progressDialog.setTitle("Sending data please wait...");
-        //progressDialog.show();
+        final ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("Uploading data to Acute...");
+        progressDialog.show();
 
         if (selectedImage != null) {
-            empRef.putFile(selectedImage)
-                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            galleryAddPic();
-                            //progressDialog.dismiss();
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception exception) {
-                            Toast.makeText(AddDetails.this, exception.getMessage(), Toast.LENGTH_SHORT).show();
-                            //progressDialog.dismiss();
-                        }
-                    });
-                    /*.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                            double progress = (100.0 * taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
-                            progressDialog.setMessage((int)progress + "%");
-                        }
-                    });*/
+            UploadTask uploadTask = empRef.putFile(selectedImage);
+
+            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    uploadDetails(employee);
+                    progressDialog.dismiss();
+
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    Toast.makeText(AddDetails.this, exception.getMessage(), Toast.LENGTH_SHORT).show();
+                    progressDialog.dismiss();
+                }
+            })
+           .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                    double progress = (100.0 * taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
+                    progressDialog.setMessage((int)progress + "%    completed");
+                }
+            });
         }
 
     }
@@ -268,9 +284,8 @@ public class AddDetails extends AppCompatActivity {
 
                             loadedBitmap = getRotatedImage(loadedBitmap, imgDecodableString);
 
-                            ImageView imagView = findViewById(R.id.imageView_dp);
                             // Set the Image in ImageView after decoding the String
-                            imagView.setImageBitmap(loadedBitmap);
+                            imageView.setImageBitmap(loadedBitmap);
 
                         } else {
                             Toast.makeText(this, "You haven't picked Image",
@@ -372,11 +387,11 @@ public class AddDetails extends AppCompatActivity {
 
     private void setPic() {
 
-        ImageView mImageView = findViewById(R.id.imageView_dp);
+        //ImageView mImageView = findViewById(R.id.imageView_dp);
 
         // Get the dimensions of the View
-        int targetW = mImageView.getWidth();
-        int targetH = mImageView.getHeight();
+        int targetW = imageView.getWidth();
+        int targetH = imageView.getHeight();
 
         // Get the dimensions of the bitmap
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
@@ -397,6 +412,8 @@ public class AddDetails extends AppCompatActivity {
 
         bitmap = getRotatedImage(bitmap, mCurrentPhotoPath);
 
-        mImageView.setImageBitmap(bitmap);
+        imageView.setImageBitmap(bitmap);
+
+        galleryAddPic();
     }
 }

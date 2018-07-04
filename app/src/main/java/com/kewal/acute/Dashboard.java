@@ -116,7 +116,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.add_emp_card:
-                startActivity(new Intent(Dashboard.this, AddDetails.class));
+                startActivity(new Intent(Dashboard.this, AddEmployeeActivity.class));
                 break;
 
             case R.id.review_card:

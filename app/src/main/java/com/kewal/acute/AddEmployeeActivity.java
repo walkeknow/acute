@@ -154,7 +154,7 @@ public class AddEmployeeActivity extends AppCompatActivity implements AdapterVie
                 birth_date = textView_birth_date.getText().toString();
             }
 
-            String card = editText_card.getText().toString().trim();
+            String card_no = editText_card.getText().toString().trim();
             String name = editText_name.getText().toString().trim();
             String id = null;
 
@@ -164,8 +164,10 @@ public class AddEmployeeActivity extends AppCompatActivity implements AdapterVie
                 Toast.makeText(AddEmployeeActivity.this, "Date of Birth should not be empty" ,Toast.LENGTH_SHORT).show();
             } else if (!ValidateDetails.isNameValid(name)) {
                 Toast.makeText(AddEmployeeActivity.this, "Please enter a valid name",Toast.LENGTH_SHORT).show();
-            } else  if (card.isEmpty()) {
-
+            } else  if (card_no.isEmpty()) {
+                card_type = "N/A";
+                card_no = "N/A";
+                rating = "N/A";
                 Employee employee = new Employee(
                     id,
                     name,

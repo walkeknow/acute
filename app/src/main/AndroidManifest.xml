@@ -93,7 +93,8 @@
         </activity>
         <activity
             android:name=".AddDetails"
-            android:parentActivityName=".Dashboard">
+            android:parentActivityName=".Dashboard"
+            android:configChanges="keyboard|orientation|screenSize">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity">
@@ -101,7 +102,8 @@
         </activity>
         <activity
             android:name=".ProfileActivity"
-            android:parentActivityName=".Dashboard">
+            android:parentActivityName=".Dashboard"
+            android:configChanges="keyboard|orientation|screenSize">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity">
