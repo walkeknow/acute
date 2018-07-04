@@ -14,12 +14,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DatabaseReference;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class AddEmployeeActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnClickListener{
 
@@ -29,7 +29,16 @@ public class AddEmployeeActivity extends AppCompatActivity implements AdapterVie
     private static String emp_name;
     private static String emp_age;
     private static int card_id;
+    private static String card_type;
+    private static String birthDate;
+    private static String rating;
+    private static String cityId;
+    private static String comment;
+    private static String photo;
+    private static String bossId;
 
+
+    DatabaseReference databaseReferenceEmployees;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,14 +52,12 @@ public class AddEmployeeActivity extends AppCompatActivity implements AdapterVie
             // actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        Spinner job_spinner = (Spinner) findViewById(R.id.spinner);
-        Spinner card_spinner = (Spinner) findViewById(R.id.spinner2);
+        Spinner job_spinner = (Spinner) findViewById(R.id.spinnerEmployee);
+        Spinner card_spinner = (Spinner) findViewById(R.id.spinnerCard);
         Button save_button = (Button) findViewById(R.id.button_save);
         final TextView birthDate = findViewById(R.id.editDate);
         final Calendar myCalendar = Calendar.getInstance();
         final Calendar currentCalendar = Calendar.getInstance();
-
-
 
         save_button.setOnClickListener(this);
         job_spinner.setOnItemSelectedListener(this);
@@ -75,6 +82,8 @@ public class AddEmployeeActivity extends AppCompatActivity implements AdapterVie
                 } else {
                     birthDate.setText(formatDate(date));
                 }
+
+                //databaseReferenceEmployees = FirebaseDatabase.getInstance().getReference("Employees");
             }
 
         };
@@ -112,16 +121,17 @@ public class AddEmployeeActivity extends AppCompatActivity implements AdapterVie
     public void onItemSelected(AdapterView<?> parent, View view,
                                int pos, long id) {
         switch (parent.getId()) {
-            case R.id.spinner:
+            case R.id.spinnerEmployee:
                 //Toast.makeText(AddEmployeeActivity.this, parent.getSelectedItem().toString(),Toast.LENGTH_SHORT).show();
                 emp_type = parent.getSelectedItem().toString();
+                break;
 
-
-            case R.id.spinner2:
+            case R.id.spinnerCard:
                 //Toast.makeText(AddEmployeeActivity.this, parent.getSelectedItem().toString(),Toast.LENGTH_SHORT).show();
                 id_type = parent.getSelectedItem().toString();
-
+                card_type = parent.getSelectedItem().toString();
                 card_id = (int) parent.getSelectedItemId();
+                break;
         }
     }
 
@@ -129,7 +139,6 @@ public class AddEmployeeActivity extends AppCompatActivity implements AdapterVie
     public void onNothingSelected(AdapterView<?> parent) {
         Toast.makeText(AddEmployeeActivity.this, "Select at least one item", Toast.LENGTH_SHORT).show();
     }
-
 
 
     @Override
@@ -145,8 +154,9 @@ public class AddEmployeeActivity extends AppCompatActivity implements AdapterVie
                 birth_date = textView_birth_date.getText().toString();
             }
 
-            String card = editText_card.getText().toString();
-            String name = editText_name.getText().toString();
+            String card = editText_card.getText().toString().trim();
+            String name = editText_name.getText().toString().trim();
+            String id = null;
 
             if (name.isEmpty()) {
                 Toast.makeText(AddEmployeeActivity.this, "Name should not be empty" ,Toast.LENGTH_SHORT).show();
@@ -155,11 +165,28 @@ public class AddEmployeeActivity extends AppCompatActivity implements AdapterVie
             } else if (!ValidateDetails.isNameValid(name)) {
                 Toast.makeText(AddEmployeeActivity.this, "Please enter a valid name",Toast.LENGTH_SHORT).show();
             } else  if (card.isEmpty()) {
-                startActivity(new Intent(AddEmployeeActivity.this, AddDetails.class));
+
+                Employee employee = new Employee(
+                    id,
+                    name,
+                    emp_type,
+                    card_no,
+                    card_type,
+                    birth_date,
+                    rating,
+                    cityId,
+                    comment,
+                    photo,
+                    bossId
+                );
+
+                Intent intent = new Intent(AddEmployeeActivity.this, AddDetails.class);
+                intent.putExtra("EmpObj", employee);
+                startActivity(intent);
+
             } else {
                 //TODO: copy below statements in else block
                 card_no = editText_card.getText().toString();
-                emp_name = editText_name.getText().toString();
                 boolean validated = true;
 
                 switch(card_id) {
@@ -195,8 +222,37 @@ public class AddEmployeeActivity extends AppCompatActivity implements AdapterVie
                     default:
                         break;
                 }
+
                 if(validated) {
-                    startActivity(new Intent(AddEmployeeActivity.this, AddDetails.class));
+
+                    /*String id = databaseReferenceEmployees.getKey();
+                    final Employee employee = new Employee();
+
+                    employee.setEmpId(id);
+                    employee.setEmpName(name);
+                    employee.setCardNo(card_no);
+                    employee.setCardType(card_type);
+                    employee.setBirthDate(birth_date);
+                    employee.setRating(rating);
+                    employee.setCityId(cityId);
+                    employee.setComment(comment);
+                    employee.setPhoto(photo);
+                    employee.setBossId(bossId);*/
+
+                    /*databaseReferenceEmployees.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            databaseReferenceEmployees.child("User01").setValue(employee);
+                            startActivity(new Intent(AddEmployeeActivity.this, AddDetails.class));
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });*/
+
+
                 }
             }
 
