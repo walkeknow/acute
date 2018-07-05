@@ -111,4 +111,13 @@ class ValidateDetails {
         // Check if pattern matches
         return matcher.matches();
     }
+
+    public static boolean isNumberValid (String s) {
+        Pattern pattern = Pattern.compile("^[6-9]\\d{9}$");
+
+        Matcher matcher = pattern.matcher(s);
+
+        // Check if pattern matches
+        return matcher.matches();
+    }
 }

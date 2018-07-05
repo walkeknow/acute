@@ -17,7 +17,6 @@ import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -42,14 +41,10 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.EnumMap;
 
 public class AddDetails extends AppCompatActivity {
-    //private static final int CAMERA_REQUEST = 1888;
-    //private ImageView imageView;
     private static final int CAMERA_PERMISSION_CODE = 100;
     private static final int GALLERY_PERMISSION_CODE = 2;
-    String imgDecodableString;
     private static String emp_comments;
     DatabaseReference databaseReferenceEmployees;
     private StorageReference mStorageRef;
@@ -58,6 +53,7 @@ public class AddDetails extends AppCompatActivity {
     String mCurrentPhotoPath;
     private final int CAMERA_REQUEST = 1888;
     ImageView imageView;
+    //private static AlertDialog dialog;
 
 
     @Override
@@ -72,7 +68,6 @@ public class AddDetails extends AppCompatActivity {
         }
 
         Button button_submit = findViewById(R.id.button_submit);
-        final EditText editText_comments = findViewById(R.id.editText_comments);
 
         imageView = findViewById(R.id.imageView_dp);
 
@@ -92,23 +87,20 @@ public class AddDetails extends AppCompatActivity {
                 imageButtonCamera.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        dialog.dismiss();
                         // Toast.makeText(ProfileActivity.this, "Camera", Toast.LENGTH_SHORT).show();
                         if (ActivityCompat.checkSelfPermission(AddDetails.this, android.Manifest.permission.CAMERA)
                                 != PackageManager.PERMISSION_GRANTED) {
                             ActivityCompat.requestPermissions(AddDetails.this, new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_CODE);
                         } else {
-                            /*Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                            dialog.dismiss();
-                            startActivityForResult(cameraIntent, CAMERA_REQUEST);*/
                             dispatchTakePictureIntent();
-                            dialog.dismiss();
                         }
                     }
                 });
                 imageButtonGallery.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        // Toast.makeText(ProfileActivity.this, "Gallery", Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
                         try {
                             if (ActivityCompat.checkSelfPermission(AddDetails.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                                 ActivityCompat.requestPermissions(AddDetails.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, GALLERY_PERMISSION_CODE);
@@ -117,7 +109,6 @@ public class AddDetails extends AppCompatActivity {
                                 Intent galleryIntent = new Intent(Intent.ACTION_PICK);
                                 galleryIntent.setType("image/*");
                                 // Start the Intent
-                                dialog.dismiss();
                                 startActivityForResult(galleryIntent, GALLERY_PERMISSION_CODE);
                             }
                         } catch (Exception e) {
@@ -162,11 +153,11 @@ public class AddDetails extends AppCompatActivity {
                 if(selectedImage != null) {
                     uploadFile(employee);
                 } else {
+                    databaseReferenceEmployees.child("Employees").child(employee.getEmpName()).setValue(employee);
                     Toast.makeText(AddDetails.this, "Employee details submitted!", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(AddDetails.this, MainActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
-                    Toast.makeText(AddDetails.this, "successful " + id, Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -177,7 +168,7 @@ public class AddDetails extends AppCompatActivity {
         if(id != null) {
             databaseReferenceEmployees.child("Employees").child(employee.getEmpName()).setValue(employee);
 
-            Toast.makeText(AddDetails.this, "Employee details submitted!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(AddDetails.this, "employee details submitted, Thank You!", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(AddDetails.this, MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
@@ -229,11 +220,21 @@ public class AddDetails extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == CAMERA_PERMISSION_CODE) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "camera permission granted", Toast.LENGTH_LONG).show();
-                Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(cameraIntent, CAMERA_REQUEST);
+                //Toast.makeText(this, "camera permission granted", Toast.LENGTH_LONG).show();
+                dispatchTakePictureIntent();
             } else {
                 Toast.makeText(this, "camera permission denied", Toast.LENGTH_LONG).show();
+            }
+        }
+        if (requestCode == GALLERY_PERMISSION_CODE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Create intent to Open Image applications like Gallery, Google Photos
+                Intent galleryIntent = new Intent(Intent.ACTION_PICK);
+                galleryIntent.setType("image/*");
+                // Start the Intent
+                startActivityForResult(galleryIntent, GALLERY_PERMISSION_CODE);
+            } else {
+                Toast.makeText(this, "gallery permission denied", Toast.LENGTH_LONG).show();
             }
         }
     }
