@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -24,6 +25,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -33,8 +35,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
+import com.facebook.login.LoginManager;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -70,6 +78,8 @@ public class ProfileActivity extends AppCompatActivity {
     private final int CAMERA_REQUEST = 1888;
     ImageView imageView;
     //private static AlertDialog dialog;
+    Button button_exit;
+    GoogleSignInClient mGoogleSignInClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,35 +91,25 @@ public class ProfileActivity extends AppCompatActivity {
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
 
         if (actionBar != null) {
-            actionBar.setTitle("Profile");
+            actionBar.setTitle("Fill Details");
         }
 
         final TextView birthDate = findViewById(R.id.editDate);
         final Calendar myCalendar = Calendar.getInstance();
         final Calendar currentCalendar = Calendar.getInstance();
 
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
 
-        /*try {
-            if (FirebaseDatabase.getInstance().getReference("Supervisors").child("id").getKey().equals(mAuth.getUid())) {
 
-            }
-        } catch (Exception e) {
-            Log.i("ProfileActivity", "Supervisor does not exist in database");
-        }
+        // Configure Google Sign In
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
 
-        ValueEventListener valueEventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists()) {
-                    for (DataSnapshot snapshot : )
-                }
-            }
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-            }[
-        };*/
 
         final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
 
@@ -218,7 +218,8 @@ public class ProfileActivity extends AppCompatActivity {
                 EditText editText_username = findViewById(R.id.editText_user_name);
                 TextView textView_birth_date = findViewById(R.id.editDate);
                 AutoCompleteTextView autoCompleteTextView_city = findViewById(R.id.autoCompleteTextView_city);
-                EditText editText_address = findViewById(R.id.editText3_Complete_Address);
+                EditText editText_address = findViewById(R.id.editText3_Address_1);
+                EditText editText_pincode = findViewById(R.id.editText3_Pin_Code);
                 EditText editText_number = findViewById(R.id.editText5_mobile_number);
 
 
@@ -228,7 +229,10 @@ public class ProfileActivity extends AppCompatActivity {
                 id = mAuth.getUid();
                 String address = "N/A";
                 String number = "N/A";
+                String pincode = editText_pincode.getText().toString().trim();
                 boolean mob_flag = true;
+                boolean name_flag = true;
+                boolean pin_flag = true;
 
                 if (textView_birth_date.getText() != null ) {
                     birth_date = textView_birth_date.getText().toString();
@@ -246,13 +250,25 @@ public class ProfileActivity extends AppCompatActivity {
                     }
                 }
 
+                if (!name.isEmpty()) {
+                    if(ValidateDetails.isNameValid(name)) name_flag = false;
+                }
+
+                if (!pincode.isEmpty()) {
+                    if(ValidateDetails.isPinCodeValid(pincode)) pin_flag = false;
+                }
+
 
                 if (name.isEmpty()) {
-                    Toast.makeText(ProfileActivity.this, "Username should not be empty" ,Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ProfileActivity.this, "Name should not be empty" ,Toast.LENGTH_SHORT).show();
                 } else if (city.isEmpty()) {
                     Toast.makeText(ProfileActivity.this, "City should not be empty" ,Toast.LENGTH_SHORT).show();
                 } else if (!mob_flag) {
                     Toast.makeText(ProfileActivity.this, "Please enter a valid mobile number" ,Toast.LENGTH_SHORT).show();
+                } else if (!name_flag) {
+                    Toast.makeText(ProfileActivity.this, "Please enter a name" ,Toast.LENGTH_SHORT).show();
+                } else if (!pin_flag) {
+                    Toast.makeText(ProfileActivity.this, "Please enter a valid pin code number" ,Toast.LENGTH_SHORT).show();
                 } else {
                     Supervisor supervisor = new Supervisor(
                           id,
@@ -284,6 +300,24 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void signOut() {
+        mGoogleSignInClient.signOut()
+                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        mAuth.signOut();
+                        Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                    }
+                });
+    }
+
+    public boolean isLoggedIn() {
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        return accessToken != null;
     }
 
     public String formatDate(Date date) {
@@ -327,7 +361,6 @@ public class ProfileActivity extends AppCompatActivity {
         StorageReference empRef = mStorageRef.child("supervisors").child("employee" + id +".jpg");
 
         final ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("Uploading data to Acute...");
         progressDialog.show();
 
         if (selectedImage != null) {
@@ -351,7 +384,7 @@ public class ProfileActivity extends AppCompatActivity {
                         @Override
                         public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
                             double progress = (100.0 * taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
-                            progressDialog.setMessage((int)progress + "%    completed");
+                            progressDialog.setMessage("Sending data " + (int)progress + "%    completed");
                         }
                     });
         }
@@ -559,5 +592,19 @@ public class ProfileActivity extends AppCompatActivity {
         imageView.setImageBitmap(bitmap);
 
         galleryAddPic();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if (isLoggedIn()) {
+            mAuth.signOut();
+            LoginManager.getInstance().logOut();
+            Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+        } else {
+            signOut();
+        }
     }
 }

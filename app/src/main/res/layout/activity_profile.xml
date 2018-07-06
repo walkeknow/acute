@@ -5,11 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ProfileActivity"
+    android:background="@color/light_gray"
     tools:layout_editor_absoluteY="81dp">
 
     <LinearLayout
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
@@ -24,14 +25,14 @@
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fillViewport="true">
+            android:layout_height="wrap_content"
+            android:fillViewport="false">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_gravity="center_horizontal">
+                android:layout_gravity="center_horizontal"
+                android:orientation="vertical">
 
                 <android.support.constraint.ConstraintLayout
                     android:id="@+id/constraintLayout5"
@@ -39,8 +40,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
                     android:layout_marginStart="8dp"
-                    android:foregroundGravity="center"
                     android:layout_marginTop="8dp"
+                    android:foregroundGravity="center"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
@@ -69,83 +70,132 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:layout_marginTop="32dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    android:animateLayoutChanges="true">
+                    android:layout_marginTop="32dp"
+                    android:background="@color/colorPrimaryDark"
+                    android:animateLayoutChanges="true"
+                    android:orientation="vertical">
 
                     <EditText
                         android:id="@+id/editText_user_name"
                         android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
                         android:ems="10"
                         android:hint="@string/name"
+                        android:layout_margin="4dp"
+                        android:textColor="@color/light_gray"
+                        android:textColorHint="@color/light_gray"
                         android:inputType="textCapWords" />
 
-                    <AutoCompleteTextView
-                        android:id="@+id/autoCompleteTextView_city"
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:hint="@string/city" />
+                        android:layout_height="wrap_content"
+                        android:animateLayoutChanges="true"
+                        android:background="@color/colorPrimary"
+                        android:orientation="vertical">
+                        <EditText
+                            android:id="@+id/editText3_Address_1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ems="10"
+                            android:hint="@string/address_1"
+                            android:layout_margin="4dp"
+                            android:textColor="@color/light_gray"
+                            android:textColorHint="@color/light_gray"
+                            android:inputType="textCapSentences" />
 
-                    <EditText
-                        android:id="@+id/editText3_Complete_Address"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:ems="10"
-                        android:hint="@string/complete_address"
-                        android:inputType="textCapSentences" />
+                        <EditText
+                            android:id="@+id/editText3_Address_2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ems="10"
+                            android:layout_margin="4dp"
+                            android:hint="@string/address_2"
+                            android:textColor="@color/light_gray"
+                            android:textColorHint="@color/light_gray"
+                            android:inputType="textCapSentences" />
 
+                        <EditText
+                            android:id="@+id/editText3_Address_3"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ems="10"
+                            android:hint="@string/address_3"
+                            android:layout_margin="4dp"
+                            android:textColor="@color/light_gray"
+                            android:textColorHint="@color/light_gray"
+                            android:inputType="textCapSentences" />
+                    </LinearLayout>
+
+                        <EditText
+                            android:id="@+id/editText3_Pin_Code"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ems="10"
+                            android:hint="@string/pin_code"
+                            android:layout_margin="4dp"
+                            android:textColor="@color/light_gray"
+                            android:textColorHint="@color/light_gray"
+                            android:inputType="number" />
+
+                        <AutoCompleteTextView
+                            android:id="@+id/autoCompleteTextView_city"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="4dp"
+                            android:textColor="@color/light_gray"
+                            android:textColorHint="@color/light_gray"
+                            android:hint="@string/city" />
                     <EditText
                         android:id="@+id/editText5_mobile_number"
                         android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
                         android:ems="10"
+                        android:textColor="@color/light_gray"
+                        android:textColorHint="@color/light_gray"
                         android:hint="@string/mobile_number"
+                        android:layout_margin="4dp"
                         android:inputType="phone" />
 
                     <TextView
                         android:id="@+id/editDate"
                         android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
                         android:ems="10"
-                        android:hint="@string/age"
-                        android:textSize="18sp"
-                        android:layout_marginStart="4dp"
                         android:gravity="center_vertical"
-                        />
+                        android:textColor="@color/light_gray"
+                        android:textColorHint="@color/light_gray"
+                        android:layout_margin="8dp"
+                        android:hint="@string/age"
+                        android:textSize="18sp" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
                         android:orientation="horizontal">
 
                         <Button
                             android:id="@+id/button_save"
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:layout_height="match_parent"
-                            android:layout_margin="3dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:layout_marginBottom="8dp"
                             android:layout_marginTop="8dp"
+                            android:layout_weight="1"
                             android:background="@color/colorPrimary"
                             android:text="@string/save"
                             android:textColor="@android:color/background_light" />
+
                         <Button
                             android:id="@+id/button_exit"
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:layout_height="match_parent"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:visibility="gone"
                             android:layout_margin="3dp"
                             android:layout_marginBottom="8dp"
                             android:layout_marginTop="8dp"
+                            android:layout_weight="1"
                             android:background="@color/colorPrimary"
                             android:text="@string/exit"
                             android:textColor="@android:color/background_light" />

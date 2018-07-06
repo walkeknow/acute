@@ -120,4 +120,13 @@ class ValidateDetails {
         // Check if pattern matches
         return matcher.matches();
     }
+
+    public static boolean isPinCodeValid (String s) {
+        Pattern pattern = Pattern.compile("^[1-9][0-9]{5}$");
+
+        Matcher matcher = pattern.matcher(s);
+
+        // Check if pattern matches
+        return matcher.matches();
+    }
 }

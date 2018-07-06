@@ -19,6 +19,7 @@ import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -34,6 +35,11 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 public class LoginInActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -161,8 +167,10 @@ public class LoginInActivity extends AppCompatActivity implements View.OnClickLi
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            progressDialog.hide();
-                            startActivity(new Intent(LoginInActivity.this, Dashboard.class));
+                            Query query = FirebaseDatabase.getInstance().getReference("Supervisors")
+                                    .orderByChild("superId").equalTo(mAuth.getUid());
+
+                            query.addListenerForSingleValueEvent(valueEventListener);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
@@ -185,12 +193,13 @@ public class LoginInActivity extends AppCompatActivity implements View.OnClickLi
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            progressDialog.hide();
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
 
-                            Intent intent = new Intent(LoginInActivity.this, Dashboard.class);
-                            startActivity(intent);
+                            Query query = FirebaseDatabase.getInstance().getReference("Supervisors")
+                                    .orderByChild("superId").equalTo(mAuth.getUid());
+
+                            query.addListenerForSingleValueEvent(valueEventListener);
 
                         } else {
                             // If sign in fails, display a message to the user.
@@ -230,9 +239,10 @@ public class LoginInActivity extends AppCompatActivity implements View.OnClickLi
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     progressDialog.hide();
                     if (task.isSuccessful()) {
-                        Intent intent = new Intent(LoginInActivity.this, Dashboard.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                        startActivity(intent);
+                        Query query = FirebaseDatabase.getInstance().getReference("Supervisors")
+                                .orderByChild("superId").equalTo(mAuth.getUid());
+
+                        query.addListenerForSingleValueEvent(valueEventListener);
                     } else {
                         Log.w(TAG, "signInWithEmail:failed", task.getException());
                         Toast.makeText(LoginInActivity.this, "User Login Unsuccessful. " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
@@ -248,7 +258,7 @@ public class LoginInActivity extends AppCompatActivity implements View.OnClickLi
             case R.id.textViewRegister:
                 finish();
                 Intent intent = new Intent(LoginInActivity.this, MainActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
                 break;
 
@@ -262,6 +272,57 @@ public class LoginInActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 
+
+    ValueEventListener valueEventListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            if(dataSnapshot.exists()) {
+                Log.v("Prof", "User exists");
+                progressDialog.dismiss();
+                Intent intent = new Intent(LoginInActivity.this, Dashboard.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+            } else {
+                progressDialog.dismiss();
+                Intent intent = new Intent(LoginInActivity.this, ProfileActivity.class);
+                startActivity(intent);
+                Log.v("Prof", "New User");
+            }
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError databaseError) {
+            Log.v("ProfileAct","Failed to fetch Profile");
+            if (isLoggedIn()) {
+                mAuth.signOut();
+                LoginManager.getInstance().logOut();
+                progressDialog.dismiss();
+                //Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
+                //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                //startActivity(intent);
+            } else {
+                signOut();
+            }
+        }
+    };
+
+    private void signOut() {
+        mGoogleSignInClient.signOut()
+                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        mAuth.signOut();
+                        //Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
+                        //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        //startActivity(intent);
+                    }
+                });
+    }
+
+    public boolean isLoggedIn() {
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        return accessToken != null;
+    }
 
 }
 

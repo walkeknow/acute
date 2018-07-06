@@ -1,10 +1,12 @@
 package com.kewal.acute;
 
 import android.app.ActionBar;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -20,12 +22,18 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 public class Dashboard extends AppCompatActivity implements View.OnClickListener {
 
     private Button buttonSignOut;
     FirebaseAuth mAuth;
     GoogleSignInClient mGoogleSignInClient;
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +63,20 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                 .build();
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
+        progressDialog = new ProgressDialog(Dashboard.this);
+
+        progressDialog.show();
+        progressDialog.setMessage("Fetching data please wait...");
+        if (mAuth.getCurrentUser() == null) {
+            progressDialog.dismiss();
+            finish();
+            startActivity(new Intent(Dashboard.this, MainActivity.class));
+        }
+        Query query = FirebaseDatabase.getInstance().getReference("Supervisors")
+                .orderByChild("superId").equalTo(mAuth.getUid());
+
+        query.addListenerForSingleValueEvent(valueEventListener);
     }
 
     @Override
@@ -77,9 +99,11 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                 } else {
                     signOut();
                 }
+                break;
 
-            case  R.id.profile_ab:
+            /*case  R.id.profile_ab:
                 startActivity(new Intent(Dashboard.this, ProfileActivity.class));
+                break;*/
         }
         return super.onOptionsItemSelected(item);
     }
@@ -105,11 +129,6 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
     @Override
     protected void onStart() {
         super.onStart();
-
-        if (mAuth.getCurrentUser() == null) {
-            finish();
-            startActivity(new Intent(Dashboard.this, MainActivity.class));
-        }
     }
 
     @Override
@@ -129,4 +148,40 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
         super.onPause();
         overridePendingTransition(0, 0);
     }
+
+
+
+
+    ValueEventListener valueEventListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            if(dataSnapshot.exists()) {
+                Log.v("Prof", "User exists");
+                progressDialog.dismiss();
+                //Intent intent = new Intent(Dashboard.this, Dashboard.class);
+                //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                //startActivity(intent);
+            } else {
+                progressDialog.dismiss();
+                Intent intent = new Intent(Dashboard.this, ProfileActivity.class);
+                startActivity(intent);
+                Log.v("Prof", "New User");
+            }
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError databaseError) {
+            Log.v("ProfileAct","Failed to fetch Profile");
+            if (isLoggedIn()) {
+                progressDialog.dismiss();
+                mAuth.signOut();
+                LoginManager.getInstance().logOut();
+                Intent intent = new Intent(Dashboard.this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+            } else {
+                signOut();
+            }
+        }
+    };
 }

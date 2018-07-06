@@ -184,7 +184,6 @@ public class AddDetails extends AppCompatActivity {
         StorageReference empRef = mStorageRef.child("employees").child("employee" + id +".jpg");
 
         final ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("Uploading data to Acute...");
         progressDialog.show();
 
         if (selectedImage != null) {
@@ -208,7 +207,7 @@ public class AddDetails extends AppCompatActivity {
                 @Override
                 public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
                     double progress = (100.0 * taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
-                    progressDialog.setMessage((int)progress + "%    completed");
+                    progressDialog.setMessage("Sending Data " + (int)progress + "%    completed");
                 }
             });
         }

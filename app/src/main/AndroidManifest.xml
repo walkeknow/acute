@@ -106,8 +106,8 @@
         <activity
             android:name=".ProfileActivity"
             android:parentActivityName=".Dashboard"
-            android:configChanges="keyboard|orientation|screenSize"
-            android:windowSoftInputMode="stateVisible|adjustPan">
+            android:configChanges="keyboard|orientation|screenSize">
+            <!--android:windowSoftInputMode="stateVisible|adjustPan"-->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity">

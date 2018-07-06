@@ -1,6 +1,5 @@
 package com.kewal.acute;
 
-import android.app.ActionBar;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -16,10 +15,17 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -36,8 +42,15 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
-import java.security.cert.TrustAnchor;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 
 public class MainActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 0;
@@ -50,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
     FirebaseAuth mAuth;
     private static final String TAG = "MainActivity";
     private CallbackManager mCallbackManager;
+    private String url = "https://jsonplaceholder.typicode.com/posts/1";
     //private boolean connected;
 
     @Override
@@ -65,6 +79,38 @@ public class MainActivity extends AppCompatActivity {
 
         getSupportActionBar().setTitle("Register on Acute");
 
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+
+        // Request a string response from the provided URL.
+                StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                        new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                // Display the first 500 characters of the response string.
+                                Log.d("MainAct", response);
+
+                                try {
+                                    JSONObject jsonObject =  new JSONObject(response.toString());
+
+                                    String title =    jsonObject.getString("title");
+
+                                    Log.d("Title", title);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("MainAct", error.getMessage());
+                    }
+
+
+                });
+
+        // Add the request to the RequestQueue.
+                queue.add(stringRequest);
 
         Register.setOnClickListener(
                 new View.OnClickListener() {
@@ -85,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(View v) {
                         finish();
                         Intent intent = new Intent(MainActivity.this, LoginInActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
                     }
                 }
@@ -141,7 +187,6 @@ public class MainActivity extends AppCompatActivity {
                 // ...
             }
         });
-
     }
 
     //Check Network Connection
@@ -201,7 +246,10 @@ public class MainActivity extends AppCompatActivity {
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             progressDialog.hide();
-                            startActivity(new Intent(MainActivity.this, Dashboard.class));
+                            Query query = FirebaseDatabase.getInstance().getReference("Supervisors")
+                                    .orderByChild("superId").equalTo(mAuth.getUid());
+
+                            query.addListenerForSingleValueEvent(valueEventListener);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
@@ -225,10 +273,10 @@ public class MainActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            progressDialog.hide();
-                            Intent intent = new Intent(MainActivity.this, Dashboard.class);
-                            startActivity(intent);
+                            Query query = FirebaseDatabase.getInstance().getReference("Supervisors")
+                                    .orderByChild("superId").equalTo(mAuth.getUid());
 
+                            query.addListenerForSingleValueEvent(valueEventListener);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
@@ -265,7 +313,7 @@ public class MainActivity extends AppCompatActivity {
                     progressDialog.hide();
                     if (task.isSuccessful()) {
                         Toast.makeText(MainActivity.this, "Registration Successful", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(MainActivity.this, Dashboard.class);
+                        Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                         startActivity(intent);
                     } else {
@@ -282,9 +330,54 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void onPause() {
-        super.onPause();
-        overridePendingTransition(0, 0);
+    ValueEventListener valueEventListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            if(dataSnapshot.exists()) {
+                Log.v("Prof", "User exists");
+                progressDialog.dismiss();
+                Intent intent = new Intent(MainActivity.this, Dashboard.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+            } else {
+                progressDialog.dismiss();
+                Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+                startActivity(intent);
+                Log.v("Prof", "New User");
+            }
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError databaseError) {
+            Log.v("ProfileAct","Failed to fetch Profile");
+            if (isLoggedIn()) {
+                mAuth.signOut();
+                progressDialog.dismiss();
+                LoginManager.getInstance().logOut();
+                //Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
+                //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                //startActivity(intent);
+            } else {
+                signOut();
+            }
+        }
+    };
+
+    private void signOut() {
+        mGoogleSignInClient.signOut()
+                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        mAuth.signOut();
+                        //Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
+                        //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        //startActivity(intent);
+                    }
+                });
     }
 
+    public boolean isLoggedIn() {
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        return accessToken != null;
+    }
 }
