@@ -207,7 +207,7 @@ public class AddDetails extends AppCompatActivity {
                 @Override
                 public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
                     double progress = (100.0 * taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
-                    progressDialog.setMessage("Sending Data " + (int)progress + "%    completed");
+                    progressDialog.setMessage("Sending Data... " + (int)progress + "% completed");
                 }
             });
         }

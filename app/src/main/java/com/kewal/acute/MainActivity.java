@@ -247,7 +247,7 @@ public class MainActivity extends AppCompatActivity {
                             FirebaseUser user = mAuth.getCurrentUser();
                             progressDialog.hide();
                             Query query = FirebaseDatabase.getInstance().getReference("Supervisors")
-                                    .orderByChild("superId").equalTo(mAuth.getUid());
+                                    .orderByChild("id").equalTo(mAuth.getUid());
 
                             query.addListenerForSingleValueEvent(valueEventListener);
                         } else {
@@ -274,7 +274,7 @@ public class MainActivity extends AppCompatActivity {
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             Query query = FirebaseDatabase.getInstance().getReference("Supervisors")
-                                    .orderByChild("superId").equalTo(mAuth.getUid());
+                                    .orderByChild("id").equalTo(mAuth.getUid());
 
                             query.addListenerForSingleValueEvent(valueEventListener);
                         } else {

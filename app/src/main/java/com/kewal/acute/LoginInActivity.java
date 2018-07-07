@@ -168,7 +168,7 @@ public class LoginInActivity extends AppCompatActivity implements View.OnClickLi
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             Query query = FirebaseDatabase.getInstance().getReference("Supervisors")
-                                    .orderByChild("superId").equalTo(mAuth.getUid());
+                                    .orderByChild("id").equalTo(mAuth.getUid());
 
                             query.addListenerForSingleValueEvent(valueEventListener);
                         } else {
@@ -197,7 +197,7 @@ public class LoginInActivity extends AppCompatActivity implements View.OnClickLi
                             FirebaseUser user = mAuth.getCurrentUser();
 
                             Query query = FirebaseDatabase.getInstance().getReference("Supervisors")
-                                    .orderByChild("superId").equalTo(mAuth.getUid());
+                                    .orderByChild("id").equalTo(mAuth.getUid());
 
                             query.addListenerForSingleValueEvent(valueEventListener);
 
@@ -240,7 +240,7 @@ public class LoginInActivity extends AppCompatActivity implements View.OnClickLi
                     progressDialog.hide();
                     if (task.isSuccessful()) {
                         Query query = FirebaseDatabase.getInstance().getReference("Supervisors")
-                                .orderByChild("superId").equalTo(mAuth.getUid());
+                                .orderByChild("id").equalTo(mAuth.getUid());
 
                         query.addListenerForSingleValueEvent(valueEventListener);
                     } else {

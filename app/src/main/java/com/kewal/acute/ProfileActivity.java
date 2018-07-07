@@ -218,32 +218,27 @@ public class ProfileActivity extends AppCompatActivity {
                 EditText editText_username = findViewById(R.id.editText_user_name);
                 TextView textView_birth_date = findViewById(R.id.editDate);
                 AutoCompleteTextView autoCompleteTextView_city = findViewById(R.id.autoCompleteTextView_city);
-                EditText editText_address = findViewById(R.id.editText3_Address_1);
+                EditText editText_address1 = findViewById(R.id.editText3_Address_1);
+                EditText editText_address2 = findViewById(R.id.editText3_Address_2);
+                EditText editText_address3 = findViewById(R.id.editText3_Address_3);
                 EditText editText_pincode = findViewById(R.id.editText3_Pin_Code);
                 EditText editText_number = findViewById(R.id.editText5_mobile_number);
 
 
                 String name = editText_username.getText().toString().trim();
-                String birth_date = "N/A";
+                String birth_date = textView_birth_date.getText().toString();
                 String city = autoCompleteTextView_city.getText().toString().trim();
                 id = mAuth.getUid();
-                String address = "N/A";
-                String number = "N/A";
+                String address1 = editText_address1.getText().toString().trim();
+                String address2 = editText_address2.getText().toString().trim();
+                String address3 = editText_address3.getText().toString().trim();
+                String number = editText_number.getText().toString().trim();
                 String pincode = editText_pincode.getText().toString().trim();
                 boolean mob_flag = true;
                 boolean name_flag = true;
                 boolean pin_flag = true;
 
-                if (textView_birth_date.getText() != null ) {
-                    birth_date = textView_birth_date.getText().toString();
-                }
-
-                if (editText_address.getText() != null ) {
-                    address = editText_address.getText().toString();
-                }
-
                 if (editText_number.getText() != null ) {
-                    number = editText_number.getText().toString();
 
                     if (!ValidateDetails.isNumberValid(number)) {
                         mob_flag = false;
@@ -251,38 +246,41 @@ public class ProfileActivity extends AppCompatActivity {
                 }
 
                 if (!name.isEmpty()) {
-                    if(ValidateDetails.isNameValid(name)) name_flag = false;
+                    if(!ValidateDetails.isNameValid(name)) name_flag = false;
                 }
 
                 if (!pincode.isEmpty()) {
-                    if(ValidateDetails.isPinCodeValid(pincode)) pin_flag = false;
+                    if(!ValidateDetails.isPinCodeValid(pincode)) pin_flag = false;
                 }
 
 
-                if (name.isEmpty()) {
-                    Toast.makeText(ProfileActivity.this, "Name should not be empty" ,Toast.LENGTH_SHORT).show();
-                } else if (city.isEmpty()) {
-                    Toast.makeText(ProfileActivity.this, "City should not be empty" ,Toast.LENGTH_SHORT).show();
-                } else if (!mob_flag) {
-                    Toast.makeText(ProfileActivity.this, "Please enter a valid mobile number" ,Toast.LENGTH_SHORT).show();
+                if (name.isEmpty()  || address1.isEmpty()
+                        /*|| address2.isEmpty() || address3.isEmpty()*/ || pincode.isEmpty()
+                        || city.isEmpty() || number.isEmpty() || birth_date.isEmpty()) {
+                    Toast.makeText(ProfileActivity.this, "Please fill all mandatory fields to proceed" ,Toast.LENGTH_SHORT).show();
                 } else if (!name_flag) {
-                    Toast.makeText(ProfileActivity.this, "Please enter a name" ,Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ProfileActivity.this, "Please enter a valid name" ,Toast.LENGTH_SHORT).show();
                 } else if (!pin_flag) {
                     Toast.makeText(ProfileActivity.this, "Please enter a valid pin code number" ,Toast.LENGTH_SHORT).show();
-                } else {
+                } else if (!mob_flag) {
+                    Toast.makeText(ProfileActivity.this, "Please enter a valid mobile number" ,Toast.LENGTH_SHORT).show();
+                }else {
                     Supervisor supervisor = new Supervisor(
-                          id,
-                          name,
-                          city,
-                          address,
-                          number,
-                          birth_date
+                            id,
+                            name,
+                            address1,
+                            address2,
+                            address3,
+                            pincode,
+                            city,
+                            number,
+                            birth_date
                     );
 
                     if(selectedImage != null) {
                         uploadFile(supervisor);
                     } else {
-                        databaseReferenceSupervisor.child("Supervisors").child(supervisor.getSuperName()).setValue(supervisor);
+                        databaseReferenceSupervisor.child("Supervisors").child(supervisor.getId()).setValue(supervisor);
                         Toast.makeText(ProfileActivity.this, "Your details have been saved!", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -341,7 +339,7 @@ public class ProfileActivity extends AppCompatActivity {
     private void uploadDetails(Supervisor employer) {
 
         if(id != null) {
-            databaseReferenceSupervisor.child("Supervisors").child(employer.getSuperId()).setValue(employer);
+            databaseReferenceSupervisor.child("Supervisors").child(employer.getId()).setValue(employer);
 
             Toast.makeText(ProfileActivity.this, "All details have been saved!", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
@@ -384,7 +382,7 @@ public class ProfileActivity extends AppCompatActivity {
                         @Override
                         public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
                             double progress = (100.0 * taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
-                            progressDialog.setMessage("Sending data " + (int)progress + "%    completed");
+                            progressDialog.setMessage("Sending data... " + (int)progress + "% completed");
                         }
                     });
         }

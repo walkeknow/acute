@@ -14,12 +14,12 @@
     <string name="search_reviews">Search Reviews</string>
     <string name="add_comment">Fill in work history or any additional comments about the employee here</string>
     <string name="submit">Submit</string>
-    <string name="name">Name</string>
+    <string name="name">*Name</string>
     <string name="view_results">View Results</string>
     <string name="location">location</string>
     <string name="id_card_type">ID Card Type</string>
-    <string name="city">City</string>
-    <string name="age">Date of birth</string>
+    <string name="city">*City</string>
+    <string name="age">*Date of birth</string>
     <string name="search">Search</string>
     <string name="results">Results</string>
     <string name="age_hint">20</string>
@@ -31,12 +31,12 @@
     <string name="valid_digits">ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890 \</string>
     <string name="card_number">Card Number</string>
     <string name="complete_address">Complete Address</string>
-    <string name="mobile_number">Mobile Number</string>
+    <string name="mobile_number">*Mobile Number</string>
     <string name="exit">exit</string>
-    <string name="address_1">Address 1&#160;&#160;&#160;[House/Flat No.]</string>
-    <string name="address_2">Address 2&#160;&#160;&#160;[Street/Landmark]</string>
-    <string name="address_3">Address 3&#160;&#160;&#160;[Area]</string>
-    <string name="pin_code">Pin Code</string>
+    <string name="address_1">*Address 1&#160;&#160;&#160;[House No./Society]</string>
+    <string name="address_2">&#160;Address 2&#160;&#160;&#160;[Street/Landmark]</string>
+    <string name="address_3">&#160;Address 3&#160;&#160;&#160;[Area]</string>
+    <string name="pin_code">*Pin Code</string>
     <string-array name="job_array">
         <item>Full Time Servant</item>
         <item>Part Time Servant</item>

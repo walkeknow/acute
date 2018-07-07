@@ -74,7 +74,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
             startActivity(new Intent(Dashboard.this, MainActivity.class));
         }
         Query query = FirebaseDatabase.getInstance().getReference("Supervisors")
-                .orderByChild("superId").equalTo(mAuth.getUid());
+                .orderByChild("id").equalTo(mAuth.getUid());
 
         query.addListenerForSingleValueEvent(valueEventListener);
     }

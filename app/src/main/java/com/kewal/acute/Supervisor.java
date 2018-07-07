@@ -2,71 +2,104 @@ package com.kewal.acute;
 
 import java.io.Serializable;
 
-public class Supervisor implements Serializable{
+public class Supervisor implements Serializable {
 
-    String superId;
-    String superName;
-    String superCity;
-    String superAddress;
-    String superMobNo;
-    String superBirthDate;
+    String id;
+    String name;
+    String address_1;
+    String address_2;
+    String address_3;
+    String pin_code;
+    String city;
+    String mobile_number;
+    String birth_date;
 
-    public Supervisor(){};
-
-    public Supervisor(String superId, String superName, String superCity, String superAddress, String superMobNo, String superBirthDate) {
-        this.superId = superId;
-        this.superName = superName;
-        this.superCity = superCity;
-        this.superAddress = superAddress;
-        this.superMobNo = superMobNo;
-        this.superBirthDate = superBirthDate;
+    public Supervisor() {
     }
 
-    public String getSuperName() {
-        return superName;
+    ;
+
+    public Supervisor(String id, String name, String address_1, String address_2, String address_3, String pin_code, String city, String mobile_number, String birth_date) {
+        this.id = id;
+        this.name = name;
+        this.address_1 = address_1;
+        this.address_2 = address_2;
+        this.address_3 = address_3;
+        this.pin_code = pin_code;
+        this.city = city;
+        this.mobile_number = mobile_number;
+        this.birth_date = birth_date;
     }
 
-    public void setSuperName(String superName) {
-        this.superName = superName;
+    public String getId() {
+        return id;
     }
 
-    public String getSuperId() {
-        return superId;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public void setSuperId(String superId) {
-        this.superId = superId;
+    public String getName() {
+        return name;
     }
 
-    public String getSuperCity() {
-        return superCity;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void setSuperCity(String superCity) {
-        this.superCity = superCity;
+    public String getAddress_1() {
+        return address_1;
     }
 
-    public String getSuperAddress() {
-        return superAddress;
+    public void setAddress_1(String address_1) {
+        this.address_1 = address_1;
     }
 
-    public void setSuperAddress(String superAddress) {
-        this.superAddress = superAddress;
+    public String getAddress_2() {
+        return address_2;
     }
 
-    public String getSuperMobNo() {
-        return superMobNo;
+    public void setAddress_2(String address_2) {
+        this.address_2 = address_2;
     }
 
-    public void setSuperMobNo(String superMobNo) {
-        this.superMobNo = superMobNo;
+    public String getAddress_3() {
+        return address_3;
     }
 
-    public String getSuperBirthDate() {
-        return superBirthDate;
+    public void setAddress_3(String address_3) {
+        this.address_3 = address_3;
     }
 
-    public void setSuperBirthDate(String superBirthDate) {
-        this.superBirthDate = superBirthDate;
+    public String getPin_code() {
+        return pin_code;
+    }
+
+    public void setPin_code(String pin_code) {
+        this.pin_code = pin_code;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getMobile_number() {
+        return mobile_number;
+    }
+
+    public void setMobile_number(String mobile_number) {
+        this.mobile_number = mobile_number;
+    }
+
+    public String getBirth_date() {
+        return birth_date;
+    }
+
+    public void setBirth_date(String birth_date) {
+        this.birth_date = birth_date;
     }
 }
