@@ -37,7 +37,7 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:ems="10"
-                android:hint="@string/name"
+                android:hint="@string/name_search"
                 android:inputType="textCapWords" />
 
             <AutoCompleteTextView
@@ -46,7 +46,7 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:ems="10"
-                android:hint="@string/city"
+                android:hint="@string/city_search"
                 android:inputType="textCapWords"/>
 
             <TextView
@@ -55,7 +55,7 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:ems="10"
-                android:hint="@string/age"
+                android:hint="@string/date_of_birth_search"
                 android:textSize="18sp"
                 android:layout_marginTop="16dp"
                 android:layout_marginStart="5dp"

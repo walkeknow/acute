@@ -8,6 +8,8 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -44,7 +46,7 @@
         </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".RegisterActivity"
             android:theme="@style/AppTheme">
         </activity>
         <activity
@@ -74,52 +76,52 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
-        <activity android:name=".Dashboard" />
+        <activity android:name=".DashboardActivity" />
         <activity
             android:name=".AddEmployeeActivity"
             android:windowSoftInputMode="stateVisible|adjustPan"
-            android:parentActivityName=".Dashboard">
+            android:parentActivityName=".DashboardActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity">
+                android:value=".RegisterActivity">
             </meta-data>
         </activity>
         <activity
             android:name=".SearchReviewActivity"
             android:windowSoftInputMode="stateVisible|adjustPan"
-            android:parentActivityName=".Dashboard">
+            android:parentActivityName=".DashboardActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity">
+                android:value=".RegisterActivity">
             </meta-data>
         </activity>
         <activity
             android:name=".AddDetails"
-            android:parentActivityName=".Dashboard"
+            android:parentActivityName=".DashboardActivity"
             android:windowSoftInputMode="stateVisible|adjustPan"
             android:configChanges="keyboard|orientation|screenSize">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity">
+                android:value=".RegisterActivity">
             </meta-data>
         </activity>
         <activity
             android:name=".ProfileActivity"
-            android:parentActivityName=".Dashboard"
+            android:parentActivityName=".DashboardActivity"
             android:configChanges="keyboard|orientation|screenSize">
             <!--android:windowSoftInputMode="stateVisible|adjustPan"-->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity">
+                android:value=".RegisterActivity">
             </meta-data>
         </activity>
         <activity
             android:name=".DisplayResultActivity"
             android:windowSoftInputMode="stateVisible|adjustPan"
-            android:parentActivityName=".Dashboard">
+            android:parentActivityName=".DashboardActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity">
+                android:value=".RegisterActivity">
             </meta-data>
         </activity>
     </application>

@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -21,7 +20,6 @@ import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -30,7 +28,6 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.MultiAutoCompleteTextView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,12 +41,8 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -62,7 +55,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
-import java.util.regex.Pattern;
 
 
 public class ProfileActivity extends AppCompatActivity {
@@ -282,7 +274,7 @@ public class ProfileActivity extends AppCompatActivity {
                     } else {
                         databaseReferenceSupervisor.child("Supervisors").child(supervisor.getId()).setValue(supervisor);
                         Toast.makeText(ProfileActivity.this, "Your details have been saved!", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
+                        Intent intent = new Intent(ProfileActivity.this, RegisterActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
                     }
@@ -292,7 +284,7 @@ public class ProfileActivity extends AppCompatActivity {
         findViewById(R.id.button_exit).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ProfileActivity.this, Dashboard.class);
+                Intent intent = new Intent(ProfileActivity.this, DashboardActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
             }
@@ -306,7 +298,7 @@ public class ProfileActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         mAuth.signOut();
-                        Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
+                        Intent intent = new Intent(ProfileActivity.this, RegisterActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
                     }
@@ -328,7 +320,7 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         if(mAuth.getCurrentUser() == null) {
-            Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
+            Intent intent = new Intent(ProfileActivity.this, RegisterActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
         }
@@ -342,7 +334,7 @@ public class ProfileActivity extends AppCompatActivity {
             databaseReferenceSupervisor.child("Supervisors").child(employer.getId()).setValue(employer);
 
             Toast.makeText(ProfileActivity.this, "All details have been saved!", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
+            Intent intent = new Intent(ProfileActivity.this, RegisterActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             Intent intent_diff = new Intent(ProfileActivity.this, AddDetails.class);
             intent_diff.putExtra("SupObj", employer);
@@ -598,7 +590,7 @@ public class ProfileActivity extends AppCompatActivity {
         if (isLoggedIn()) {
             mAuth.signOut();
             LoginManager.getInstance().logOut();
-            Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
+            Intent intent = new Intent(ProfileActivity.this, LoginInActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
         } else {

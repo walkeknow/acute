@@ -155,7 +155,7 @@ public class AddDetails extends AppCompatActivity {
                 } else {
                     databaseReferenceEmployees.child("Employees").child(employee.getEmpName()).setValue(employee);
                     Toast.makeText(AddDetails.this, "Employee details submitted!", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(AddDetails.this, MainActivity.class);
+                    Intent intent = new Intent(AddDetails.this, RegisterActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
                 }
@@ -169,7 +169,7 @@ public class AddDetails extends AppCompatActivity {
             databaseReferenceEmployees.child("Employees").child(employee.getEmpName()).setValue(employee);
 
             Toast.makeText(AddDetails.this, "employee details submitted, Thank You!", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(AddDetails.this, MainActivity.class);
+            Intent intent = new Intent(AddDetails.this, RegisterActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
 

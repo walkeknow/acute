@@ -29,7 +29,7 @@
     <string name="ratings">Ratings</string>
     <string name="set">Set</string>
     <string name="valid_digits">ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890 \</string>
-    <string name="card_number">Card Number</string>
+    <string name="card_number">&#160;Card Number</string>
     <string name="complete_address">Complete Address</string>
     <string name="mobile_number">*Mobile Number</string>
     <string name="exit">exit</string>
@@ -37,6 +37,9 @@
     <string name="address_2">&#160;Address 2&#160;&#160;&#160;[Street/Landmark]</string>
     <string name="address_3">&#160;Address 3&#160;&#160;&#160;[Area]</string>
     <string name="pin_code">*Pin Code</string>
+    <string name="name_search">Name</string>
+    <string name="city_search">City</string>
+    <string name="date_of_birth_search">Date of birth</string>
     <string-array name="job_array">
         <item>Full Time Servant</item>
         <item>Part Time Servant</item>

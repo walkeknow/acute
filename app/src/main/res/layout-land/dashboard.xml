@@ -10,7 +10,7 @@
     android:gravity="center"
     android:orientation="vertical"
     android:padding="10dp"
-    tools:context=".Dashboard"
+    tools:context=".DashboardActivity"
     tools:layout_editor_absoluteY="73dp">
 
     <LinearLayout

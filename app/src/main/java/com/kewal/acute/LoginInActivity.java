@@ -5,9 +5,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -15,10 +19,18 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
@@ -40,6 +52,18 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
+import com.google.gson.JsonParseException;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.net.NetworkInterface;
+import java.util.Collections;
+import java.util.List;
 
 public class LoginInActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -53,6 +77,18 @@ public class LoginInActivity extends AppCompatActivity implements View.OnClickLi
     private static final int RC_SIGN_IN = 0;
     GoogleSignInClient mGoogleSignInClient;
     private CallbackManager mCallbackManager;
+    private static final String mMacAddress = "02:00:00:00:00:00";
+    private static final String fileAddressMac = "/sys/class/net/wlan0/address";
+    public static final String VOLLEY_TAG = "response";
+    String json_email_id = "null";
+    String json_password = "null";
+    String json_login_or_register = "login";
+    String json_login_through;
+    String json_device_id = "null";
+    String json_device_mac = "nul";
+    JSONObject jsonObject;
+
+    RequestQueue queue;
     //private boolean connected;
 
     @Override
@@ -69,6 +105,12 @@ public class LoginInActivity extends AppCompatActivity implements View.OnClickLi
 
         buttonLogin.setOnClickListener(this);
         textViewRegister.setOnClickListener(this);
+
+        json_device_id= Settings.Secure.getString(LoginInActivity.this.getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        WifiManager wifi = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+
+        json_device_mac = retrieveAdresseMAC(wifi);
 
         getSupportActionBar().setTitle("Login");
 
@@ -107,6 +149,9 @@ public class LoginInActivity extends AppCompatActivity implements View.OnClickLi
             @Override
             public void onSuccess(LoginResult loginResult) {
                 Log.d(TAG, "facebook:onSuccess:" + loginResult);
+
+                getFacebookID(loginResult);
+
                 handleFacebookAccessToken(loginResult.getAccessToken());
             }
 
@@ -154,6 +199,76 @@ public class LoginInActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 
+    private void javaToJson() {
+        LoginDetails loginDetails = new LoginDetails(json_email_id, json_password, json_login_or_register, json_login_through, json_device_id, json_device_mac);
+        Gson gson = new Gson();
+        String jsonString = gson.toJson(loginDetails);
+        Log.d("json", jsonString);
+
+        try {
+            jsonObject = new JSONObject(jsonString);
+            //callAPI();
+        } catch (JSONException e) {
+            Log.d(TAG, e.getMessage());
+        }
+    }
+
+    private void callAPI() {
+
+        // Instantiate the RequestQueue.
+        queue = Volley.newRequestQueue(this);
+
+        String url = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2014-01-01&endtime=2014-12-01&minmagnitude=7";
+
+        // Request a string response from the provided URL.
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.POST, url, jsonObject, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        LoginDetails loginDetails = extractFeatureFromJson(response.toString());
+
+                        updateUi(loginDetails);
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // TODO: Handle error
+                        Toast.makeText(LoginInActivity.this,"Sorry, that didn't work!", Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, error.getMessage());
+                    }
+                });
+
+        // Add the request to the RequestQueue.
+        queue.add(jsonObjectRequest);
+        jsonObjectRequest.setTag(VOLLEY_TAG);
+    }
+
+    private void updateUi(final LoginDetails loginDetails) {
+        //do nothing if post request
+    }
+
+    private LoginDetails extractFeatureFromJson(String stringJSON) {
+
+        if (TextUtils.isEmpty(stringJSON)) {
+            return null;
+        }
+
+
+        try {
+            Gson gson = new Gson();
+            LoginDetails loginDetails = gson.fromJson(stringJSON, LoginDetails.class);
+
+
+            // Create a new {@link Event} object
+            return loginDetails;
+        } catch (JsonParseException e) {
+            Log.e(TAG, "Problem parsing the earthquake JSON results", e);
+        }
+        return null;
+    }
+
     private void handleFacebookAccessToken(AccessToken token) {
         Log.d(TAG, "handleFacebookAccessToken:" + token);
         progressDialog.setMessage("Signing you in, please wait...");
@@ -196,6 +311,8 @@ public class LoginInActivity extends AppCompatActivity implements View.OnClickLi
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
 
+                            getGoogleID();
+
                             Query query = FirebaseDatabase.getInstance().getReference("Supervisors")
                                     .orderByChild("id").equalTo(mAuth.getUid());
 
@@ -212,6 +329,51 @@ public class LoginInActivity extends AppCompatActivity implements View.OnClickLi
                 });
     }
 
+    private void getGoogleID() {
+        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(LoginInActivity.this);
+        if (acct != null) {
+            String personEmail = acct.getEmail();
+            String personId = acct.getId();
+            json_email_id = personEmail;
+            json_login_through = "G";
+            javaToJson();
+
+            Log.d("google_id", personEmail + personId);
+        }
+
+    }
+
+    private  void getFacebookID(LoginResult loginResult) {
+        GraphRequest request = GraphRequest.newMeRequest(
+                loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
+                    @Override
+                    public void onCompleted(JSONObject object, GraphResponse response) {
+                        Log.v("LoginActivity Response ", response.toString());
+
+                        try {
+                            String  Name = object.getString("name");
+
+                            String FEmail = object.getString("email");
+                            Log.v("fb", Name + FEmail);
+
+                            json_email_id = FEmail;
+                            json_login_through = "F";
+                            javaToJson();
+                            //Toast.makeText(getApplicationContext(), "Name " + Name, Toast.LENGTH_LONG).show();
+
+
+                        } catch (JSONException e) {
+                            Log.v("fb", e.getMessage());
+                        }
+                    }
+                });
+
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "id, name, email, gender, birthday");
+        request.setParameters(parameters);
+        request.executeAsync();
+    }
+
     private void signIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
@@ -219,8 +381,8 @@ public class LoginInActivity extends AppCompatActivity implements View.OnClickLi
 
     private void LoginUsr() {
 
-        String emailid = editTextEmail.getText().toString().trim();
-        String password = editTextPassword.getText().toString().trim();
+        final String emailid = editTextEmail.getText().toString().trim();
+        final String password = editTextPassword.getText().toString().trim();
 
         if(emailid.isEmpty()) {
             //email empty
@@ -234,11 +396,16 @@ public class LoginInActivity extends AppCompatActivity implements View.OnClickLi
         } else {
             progressDialog.setMessage("Logging You In, please wait...");
             progressDialog.show();
+            json_email_id = emailid;
+            json_password = password;
+            json_login_through = "L";
             mAuth.signInWithEmailAndPassword(emailid, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     progressDialog.hide();
                     if (task.isSuccessful()) {
+                        javaToJson();
+
                         Query query = FirebaseDatabase.getInstance().getReference("Supervisors")
                                 .orderByChild("id").equalTo(mAuth.getUid());
 
@@ -257,7 +424,7 @@ public class LoginInActivity extends AppCompatActivity implements View.OnClickLi
         switch (view.getId()) {
             case R.id.textViewRegister:
                 finish();
-                Intent intent = new Intent(LoginInActivity.this, MainActivity.class);
+                Intent intent = new Intent(LoginInActivity.this, RegisterActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
                 break;
@@ -279,7 +446,7 @@ public class LoginInActivity extends AppCompatActivity implements View.OnClickLi
             if(dataSnapshot.exists()) {
                 Log.v("Prof", "User exists");
                 progressDialog.dismiss();
-                Intent intent = new Intent(LoginInActivity.this, Dashboard.class);
+                Intent intent = new Intent(LoginInActivity.this, DashboardActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
             } else {
@@ -297,7 +464,7 @@ public class LoginInActivity extends AppCompatActivity implements View.OnClickLi
                 mAuth.signOut();
                 LoginManager.getInstance().logOut();
                 progressDialog.dismiss();
-                //Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
+                //Intent intent = new Intent(ProfileActivity.this, RegisterActivity.class);
                 //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 //startActivity(intent);
             } else {
@@ -312,7 +479,7 @@ public class LoginInActivity extends AppCompatActivity implements View.OnClickLi
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         mAuth.signOut();
-                        //Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
+                        //Intent intent = new Intent(ProfileActivity.this, RegisterActivity.class);
                         //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         //startActivity(intent);
                     }
@@ -324,6 +491,87 @@ public class LoginInActivity extends AppCompatActivity implements View.OnClickLi
         return accessToken != null;
     }
 
+    public static String retrieveAdresseMAC(WifiManager wifiMan) {
+        WifiInfo wifiInf = wifiMan.getConnectionInfo();
+
+        if(wifiInf.getMacAddress().equals(mMacAddress)){
+            String ret = null;
+            try {
+                ret= getAdressMacByInterface();
+                if (ret != null){
+                    return ret;
+                } else {
+                    ret = getAddressMacByFile(wifiMan);
+                    return ret;
+                }
+            } catch (IOException e) {
+                Log.e("MobileAccess", "Error reading property MAC address");
+            } catch (Exception e) {
+                Log.e("MobileAcces", "Error reading property MAC address");
+            }
+        } else{
+            return wifiInf.getMacAddress();
+        }
+        return mMacAddress;
+    }
+
+    private static String getAdressMacByInterface(){
+        try {
+            List<NetworkInterface> all = Collections.list(NetworkInterface.getNetworkInterfaces());
+            for (NetworkInterface nif : all) {
+                if (nif.getName().equalsIgnoreCase("wlan0")) {
+                    byte[] macBytes = nif.getHardwareAddress();
+                    if (macBytes == null) {
+                        return "";
+                    }
+
+                    StringBuilder res1 = new StringBuilder();
+                    for (byte b : macBytes) {
+                        res1.append(String.format("%02X:",b));
+                    }
+
+                    if (res1.length() > 0) {
+                        res1.deleteCharAt(res1.length() - 1);
+                    }
+                    return res1.toString();
+                }
+            }
+
+        } catch (Exception e) {
+            Log.e("MobileAccess", "Error reading property MAC address");
+        }
+        return null;
+    }
+
+    private static String getAddressMacByFile(WifiManager wifiMan) throws Exception {
+        String ret;
+        int wifiState = wifiMan.getWifiState();
+
+        wifiMan.setWifiEnabled(true);
+        File fl = new File(fileAddressMac);
+        FileInputStream fin = new FileInputStream(fl);
+        StringBuilder builder = new StringBuilder();
+        int ch;
+        while((ch = fin.read()) != -1){
+            builder.append((char)ch);
+        }
+
+        ret = builder.toString();
+        fin.close();
+
+        boolean enabled = WifiManager.WIFI_STATE_ENABLED == wifiState;
+        wifiMan.setWifiEnabled(enabled);
+        return ret;
+    }
+
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (queue != null) {
+            queue.cancelAll(VOLLEY_TAG);
+        }
+    }
 }
 
 
