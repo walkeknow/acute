@@ -187,7 +187,6 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.sign_in_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this, android_id.toString(), Toast.LENGTH_SHORT);
                 if(!connected()) {
                     Toast.makeText(MainActivity.this, "No network connection", Toast.LENGTH_SHORT).show();
                 } else {

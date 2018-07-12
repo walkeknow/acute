@@ -46,7 +46,7 @@
         </intent-filter>
         </activity>
         <activity
-            android:name=".RegisterActivity"
+            android:name=".MainActivity"
             android:theme="@style/AppTheme">
         </activity>
         <activity
@@ -83,7 +83,7 @@
             android:parentActivityName=".DashboardActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".RegisterActivity">
+                android:value=".MainActivity">
             </meta-data>
         </activity>
         <activity
@@ -92,7 +92,7 @@
             android:parentActivityName=".DashboardActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".RegisterActivity">
+                android:value=".MainActivity">
             </meta-data>
         </activity>
         <activity
@@ -102,7 +102,7 @@
             android:configChanges="keyboard|orientation|screenSize">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".RegisterActivity">
+                android:value=".MainActivity">
             </meta-data>
         </activity>
         <activity
@@ -112,7 +112,7 @@
             <!--android:windowSoftInputMode="stateVisible|adjustPan"-->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".RegisterActivity">
+                android:value=".MainActivity">
             </meta-data>
         </activity>
         <activity
@@ -121,7 +121,7 @@
             android:parentActivityName=".DashboardActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".RegisterActivity">
+                android:value=".MainActivity">
             </meta-data>
         </activity>
     </application>

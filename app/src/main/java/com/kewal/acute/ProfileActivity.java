@@ -274,7 +274,7 @@ public class ProfileActivity extends AppCompatActivity {
                     } else {
                         databaseReferenceSupervisor.child("Supervisors").child(supervisor.getId()).setValue(supervisor);
                         Toast.makeText(ProfileActivity.this, "Your details have been saved!", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(ProfileActivity.this, RegisterActivity.class);
+                        Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
                     }
@@ -298,7 +298,7 @@ public class ProfileActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         mAuth.signOut();
-                        Intent intent = new Intent(ProfileActivity.this, RegisterActivity.class);
+                        Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
                     }
@@ -320,7 +320,7 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         if(mAuth.getCurrentUser() == null) {
-            Intent intent = new Intent(ProfileActivity.this, RegisterActivity.class);
+            Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
         }
@@ -334,7 +334,7 @@ public class ProfileActivity extends AppCompatActivity {
             databaseReferenceSupervisor.child("Supervisors").child(employer.getId()).setValue(employer);
 
             Toast.makeText(ProfileActivity.this, "All details have been saved!", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(ProfileActivity.this, RegisterActivity.class);
+            Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             Intent intent_diff = new Intent(ProfileActivity.this, AddDetails.class);
             intent_diff.putExtra("SupObj", employer);

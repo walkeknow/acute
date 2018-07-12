@@ -424,7 +424,7 @@ public class LoginInActivity extends AppCompatActivity implements View.OnClickLi
         switch (view.getId()) {
             case R.id.textViewRegister:
                 finish();
-                Intent intent = new Intent(LoginInActivity.this, RegisterActivity.class);
+                Intent intent = new Intent(LoginInActivity.this, MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
                 break;
@@ -464,7 +464,7 @@ public class LoginInActivity extends AppCompatActivity implements View.OnClickLi
                 mAuth.signOut();
                 LoginManager.getInstance().logOut();
                 progressDialog.dismiss();
-                //Intent intent = new Intent(ProfileActivity.this, RegisterActivity.class);
+                //Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
                 //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 //startActivity(intent);
             } else {
@@ -479,7 +479,7 @@ public class LoginInActivity extends AppCompatActivity implements View.OnClickLi
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         mAuth.signOut();
-                        //Intent intent = new Intent(ProfileActivity.this, RegisterActivity.class);
+                        //Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
                         //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         //startActivity(intent);
                     }

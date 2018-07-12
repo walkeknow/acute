@@ -69,7 +69,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         if (mAuth.getCurrentUser() == null) {
             progressDialog.dismiss();
             finish();
-            startActivity(new Intent(DashboardActivity.this, MainActivity.class));
+            startActivity(new Intent(DashboardActivity.this, LoginInActivity.class));
         }
         Query query = FirebaseDatabase.getInstance().getReference("Supervisors")
                 .orderByChild("id").equalTo(mAuth.getUid());
@@ -99,6 +99,9 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                 }
                 break;
 
+                default:
+                    Log.i("menu", "Nothing Clicked");
+
             /*case  R.id.profile_ab:
                 startActivity(new Intent(DashboardActivity.this, ProfileActivity.class));
                 break;*/
@@ -112,7 +115,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         mAuth.signOut();
-                        Intent intent = new Intent(DashboardActivity.this, MainActivity.class);
+                        Intent intent = new Intent(DashboardActivity.this, LoginInActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
                     }
@@ -142,13 +145,10 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         }
     }
 
-    public void onPause() {
-        super.onPause();
-        overridePendingTransition(0, 0);
+    @Override
+    public void onBackPressed() {
+        Log.d("DashAct", "Back pressed");
     }
-
-
-
 
     ValueEventListener valueEventListener = new ValueEventListener() {
         @Override
@@ -174,7 +174,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                 progressDialog.dismiss();
                 mAuth.signOut();
                 LoginManager.getInstance().logOut();
-                Intent intent = new Intent(DashboardActivity.this, MainActivity.class);
+                Intent intent = new Intent(DashboardActivity.this, LoginInActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
             } else {

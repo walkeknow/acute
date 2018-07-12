@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -98,6 +99,12 @@ public class AddEmployeeActivity extends AppCompatActivity implements AdapterVie
 
             }
         });
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(AddEmployeeActivity.this,
+                R.array.city_array, android.R.layout.simple_dropdown_item_1line);
+
+        AutoCompleteTextView textView = findViewById(R.id.autoCompleteTextView_city);
+        textView.setAdapter(adapter);
 
         ArrayAdapter<CharSequence> job_adapter = ArrayAdapter.createFromResource(this,
                 R.array.job_array, android.R.layout.simple_spinner_item);
